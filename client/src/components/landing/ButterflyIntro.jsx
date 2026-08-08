@@ -99,7 +99,7 @@ export default function ButterflyIntro({ onComplete }) {
           
           {/* Particles Stage */}
           {(!prefersReducedMotion && phase !== 'text' && targetPoints.left.length > 0) && (
-            <div className="absolute inset-0">
+            <div className="fixed inset-0 pointer-events-none">
               {particles.map((p, i) => {
                 const target = p.isLeft ? targetPoints.left[i % (numParticles/2)] : targetPoints.right[i % (numParticles/2)];
                 
