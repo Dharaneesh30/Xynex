@@ -13,6 +13,7 @@ import Universe from './pages/universe/Universe';
 import Showcase from './pages/universe/Showcase';
 import Design from './pages/universe/Design';
 import Cart from './pages/universe/Cart';
+import NotFound from './pages/NotFound';
 
 function PageTransition({ children }) {
   const location = useLocation();
@@ -47,6 +48,7 @@ function AppRoutes() {
           <Route path="/universe/design" element={<Design />} />
           <Route path="/universe/cart" element={<Cart />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </PageTransition>
       <Footer />
