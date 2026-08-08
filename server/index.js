@@ -22,12 +22,51 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Mock Order endpoint
+// Order Endpoint
 app.post('/api/orders', async (req, res) => {
-  const { items, customer } = req.body;
-  // In a real app, we'd save this to MongoDB and stripe/razorpay.
-  console.log('Order received:', { customer, items });
-  res.status(200).json({ success: true, message: 'Order created successfully' });
+  const { items, customer, total } = req.body;
+  
+  if (!customer?.email || !items?.length) {
+    return res.status(400).json({ success: false, error: 'Invalid order data.' });
+  }
+
+  // Create HTML table for items
+  const itemsHtml = items.map(i => `<tr><td>${i.name}</td><td>${i.qty}</td><td>$${(i.price * i.qty).toLocaleString()}</td></tr>`).join('');
+  
+  const invoiceHtml = `
+    <h2>Order Invoice from XYNEX</h2>
+    <p>Hi ${customer.name},</p>
+    <p>Thank you for your order! Here is your invoice:</p>
+    <table border="1" cellpadding="10" style="border-collapse: collapse; text-align: left;">
+      <tr><th>Item</th><th>Qty</th><th>Total</th></tr>
+      ${itemsHtml}
+      <tr><td colspan="2"><strong>Subtotal + GST (Total)</strong></td><td><strong>$${total.toLocaleString()}</strong></td></tr>
+    </table>
+    <p>Shipping Address: ${customer.address}</p>
+  `;
+
+  try {
+    // 1. Send Invoice to Customer
+    await transporter.sendMail({
+      from: `"XYNEX Orders" <${process.env.SMTP_USER}>`,
+      to: customer.email,
+      subject: `Your XYNEX Order Invoice`,
+      html: invoiceHtml,
+    });
+
+    // 2. Send Order Info to Owner
+    await transporter.sendMail({
+      from: `"XYNEX Store" <${process.env.SMTP_USER}>`,
+      to: process.env.SMTP_FROM || 'dharaneesh0530@gmail.com',
+      subject: `New Order Received from ${customer.name}`,
+      html: `<h2>New Order Received!</h2><p><strong>Customer:</strong> ${customer.name} (${customer.email})</p><p><strong>Address:</strong> ${customer.address}</p><h3>Order Details:</h3><table border="1" cellpadding="10" style="border-collapse: collapse;"><tr><th>Item</th><th>Qty</th><th>Total</th></tr>${itemsHtml}<tr><td colspan="2"><strong>Total Paid</strong></td><td><strong>$${total.toLocaleString()}</strong></td></tr></table>`,
+    });
+
+    res.status(200).json({ success: true, message: 'Order processed successfully.' });
+  } catch (error) {
+    console.error('Error processing order emails:', error);
+    res.status(500).json({ success: false, error: 'Failed to process order.' });
+  }
 });
 
 // Contact Endpoint

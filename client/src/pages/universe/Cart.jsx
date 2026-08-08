@@ -15,13 +15,40 @@ export default function Cart() {
   const gst = subtotal * 0.18;
   const total = subtotal + gst;
 
-  const handleCheckout = (e) => {
+  const handleCheckout = async (e) => {
     e.preventDefault();
-    // Simulate API call for Phase 8
-    setTimeout(() => {
-      setOrderComplete(true);
-      clearCart();
-    }, 1000);
+    const formData = new FormData(e.target);
+    const customer = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      address: formData.get('address')
+    };
+
+    try {
+      // 1. Send Order to Backend (Emails invoice to customer and owner)
+      const res = await fetch('http://localhost:3001/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: cartItems, customer, total })
+      });
+
+      if (res.ok) {
+        // 2. Open WhatsApp to Owner with Order Info
+        const ownerPhone = "919489240892";
+        const itemsList = cartItems.map(i => `${i.qty}x ${i.name} ($${i.price * i.qty})`).join('%0A');
+        const text = `Hello XYNEX! I just placed an order.%0A%0A*Customer:* ${customer.name}%0A*Address:* ${customer.address}%0A%0A*Items:*%0A${itemsList}%0A%0A*Total Paid:* $${total.toLocaleString()}%0A%0APlease confirm my order!`;
+        
+        window.open(`https://wa.me/${ownerPhone}?text=${text}`, '_blank');
+
+        setOrderComplete(true);
+        clearCart();
+      } else {
+        alert("Something went wrong processing your order.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Network error while placing order.");
+    }
   };
 
   if (orderComplete) {
@@ -142,9 +169,9 @@ export default function Cart() {
         title="Checkout Details"
       >
         <form onSubmit={handleCheckout} className="space-y-6">
-          <Input label="Full Name" required placeholder="Jane Doe" />
-          <Input label="Email Address" type="email" required placeholder="jane@example.com" />
-          <Input label="Shipping Address" required placeholder="123 Xynex Ave, City, Country" />
+          <Input label="Full Name" name="name" required placeholder="Jane Doe" />
+          <Input label="Email Address" name="email" type="email" required placeholder="jane@example.com" />
+          <Input label="Shipping Address" name="address" required placeholder="123 Xynex Ave, City, Country" />
           
           <div className="pt-4 flex justify-end gap-4">
             <Button type="button" variant="ghost" onClick={() => setIsCheckoutOpen(false)}>Cancel</Button>
