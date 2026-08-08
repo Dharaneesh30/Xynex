@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Founder Name",
+    "role": "Founder & CEO",
+    "bio": "Add a sentence here about the founder's vision for intelligent space planning.",
+    "image": null
+  },
+  {
+    "id": 2,
+    "name": "Team Member Name",
+    "role": "Lead Architect",
+    "bio": "Add a sentence here about their expertise in 3D visualization.",
+    "image": null
+  },
+  {
+    "id": 3,
+    "name": "Team Member Name",
+    "role": "Head of Product",
+    "bio": "Add a sentence here about driving the XYNEX platform forward.",
+    "image": null
+  }
+]
