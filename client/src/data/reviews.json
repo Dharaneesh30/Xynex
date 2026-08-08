@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Customer Name",
+    "location": "City, State",
+    "quote": "This is a placeholder review. XYNEX made it incredibly easy to visualize the layout before committing to any purchases. The 3D view is spectacular.",
+    "rating": 5
+  },
+  {
+    "id": 2,
+    "name": "Customer Name",
+    "location": "City, State",
+    "quote": "This is a placeholder review. I loved how I could just drag and drop items and see my exact room dimensions.",
+    "rating": 5
+  },
+  {
+    "id": 3,
+    "name": "Customer Name",
+    "location": "City, State",
+    "quote": "This is a placeholder review. The instant invoice and GST calculations saved us so much time during our office redesign.",
+    "rating": 4
+  }
+]
