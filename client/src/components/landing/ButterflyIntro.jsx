@@ -47,14 +47,12 @@ export default function ButterflyIntro({ onComplete }) {
     });
 
     // Sequence timing
-    const scatterTimer = setTimeout(() => setPhase('converge'), 2500);
-    const lockTimer = setTimeout(() => setPhase('locked'), 4500);
-    const textTimer = setTimeout(() => setPhase('text'), 5000);
-    const completeTimer = setTimeout(onComplete, 7500);
+    const scatterTimer = setTimeout(() => setPhase('converge'), 2000);
+    const textTimer = setTimeout(() => setPhase('text'), 4000);
+    const completeTimer = setTimeout(onComplete, 7000);
 
     return () => {
       clearTimeout(scatterTimer);
-      clearTimeout(lockTimer);
       clearTimeout(textTimer);
       clearTimeout(completeTimer);
     };
@@ -74,7 +72,7 @@ export default function ButterflyIntro({ onComplete }) {
         scatterY: Math.random() * 100,
         rotation: Math.random() * 360,
         colorClass: isLeft ? "text-brand-blue" : "text-brand-violet",
-        delay: Math.random() * 0.5
+        delay: Math.random() * 0.8
       });
     }
     return arr;
@@ -98,7 +96,7 @@ export default function ButterflyIntro({ onComplete }) {
         <div className="relative w-full max-w-2xl aspect-square md:aspect-video flex items-center justify-center">
           
           {/* Particles Stage */}
-          {(!prefersReducedMotion && phase !== 'text' && targetPoints.left.length > 0) && (
+          {(!prefersReducedMotion && targetPoints.left.length > 0) && (
             <div className="fixed inset-0 pointer-events-none">
               {particles.map((p, i) => {
                 const target = p.isLeft ? targetPoints.left[i % (numParticles/2)] : targetPoints.right[i % (numParticles/2)];
@@ -110,13 +108,11 @@ export default function ButterflyIntro({ onComplete }) {
                   scale = Math.random() * 0.5 + 0.5;
                   opacity = 0.6;
                   rotate = p.rotation + 180;
-                } else if (phase === 'converge' || phase === 'locked') {
-                  // The SVG is 100x100 viewBox, we'll scale it to be centered in a 300px box
-                  // We map 0-100 to center viewport coords
+                } else if (phase === 'converge' || phase === 'text') {
                   x = `calc(50vw + ${(target.x - 50) * 3}px)`;
                   y = `calc(50vh + ${(target.y - 50) * 3}px)`;
-                  scale = phase === 'locked' ? 0 : 1; // shrink them out as lock happens
-                  opacity = phase === 'locked' ? 0 : 1;
+                  scale = phase === 'text' ? 0 : 1; 
+                  opacity = phase === 'text' ? 0 : 1;
                   rotate = 0;
                 }
 
@@ -127,9 +123,9 @@ export default function ButterflyIntro({ onComplete }) {
                     initial={{ x: `${p.startX}vw`, y: `${p.startY}vh`, scale: 0, opacity: 0, rotate: p.rotation }}
                     animate={{ x, y, scale, opacity, rotate }}
                     transition={
-                      phase === 'scatter' ? { duration: 2.5, ease: "easeInOut", delay: p.delay } :
-                      phase === 'converge' ? { duration: 1.5, ease: [0.22, 1, 0.36, 1], delay: Math.random() * 0.5 } :
-                      { duration: 0.5 }
+                      phase === 'scatter' ? { duration: 3, ease: "easeOut", delay: p.delay } :
+                      phase === 'converge' ? { duration: 1.8, ease: [0.4, 0, 0.2, 1] } : // No delay, fluid sweep
+                      { duration: 0.8, ease: "easeIn" }
                     }
                   >
                     <ParticleShape colorClass={p.colorClass} />
@@ -142,14 +138,18 @@ export default function ButterflyIntro({ onComplete }) {
           {/* Locked SVG Mark */}
           <motion.div 
             className="absolute z-10 flex flex-col items-center justify-center"
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ 
-              opacity: (phase === 'locked' || phase === 'text') ? 1 : 0,
-              scale: (phase === 'locked' || phase === 'text') ? 1 : 0.9
+              opacity: (phase === 'text' || phase === 'converge') ? 1 : 0,
+              scale: (phase === 'text' || phase === 'converge') ? 1 : 0.95
             }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ 
+              duration: 2, 
+              ease: "easeInOut",
+              delay: phase === 'converge' ? 1 : 0 // Fade in as particles finish converging
+            }}
           >
-            <div className={`relative ${phase === 'locked' ? 'drop-shadow-[0_0_30px_rgba(74,17,192,0.5)]' : ''} transition-all duration-1000`}>
+            <div className={`relative ${(phase === 'text') ? 'drop-shadow-[0_0_40px_rgba(74,17,192,0.6)]' : ''} transition-all duration-1000`}>
               <img src="/src/assets/logo/xynex-mark.svg" alt="XYNEX Logo" className="w-[300px] h-[300px]" />
             </div>
 
@@ -157,7 +157,7 @@ export default function ButterflyIntro({ onComplete }) {
               className="mt-8 text-center"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: phase === 'text' ? 1 : 0, y: phase === 'text' ? 0 : 20 }}
-              transition={{ duration: 1, delay: 0.5 }}
+              transition={{ duration: 1, ease: "easeOut" }}
             >
               <h1 className="font-display text-4xl md:text-5xl font-bold tracking-[0.2em] mb-3">
                 <span className="text-ink">DESIGN BEYOND </span>
