@@ -1,24 +1,183 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Stars } from '@react-three/drei';
+import * as THREE from 'three';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 const LEFT_PATH_D = "M20,10 L45,40 C50,45 50,55 45,60 L20,90 C15,95 5,90 10,80 L25,50 L10,20 C5,10 15,5 20,10 Z";
 const RIGHT_PATH_D = "M80,10 L55,40 C50,45 50,55 55,60 L80,90 C85,95 95,90 90,80 L75,50 L90,20 C95,10 85,5 80,10 Z";
 
-// Small abstract butterfly shape for particles
-const ParticleShape = ({ colorClass }) => (
-  <svg width="10" height="10" viewBox="0 0 10 10" className={colorClass}>
-    <path d="M1,1 L4.5,4 C5,4.5 5,5.5 4.5,6 L1,9 C0.5,9.5 -0.5,9 0,8 L2.5,5 L0,2 C-0.5,1 0.5,0.5 1,1 Z" fill="currentColor" />
-    <path d="M9,1 L5.5,4 C5,4.5 5,5.5 5.5,6 L9,9 C9.5,9.5 10.5,9 10,8 L7.5,5 L10,2 C10.5,1 9.5,0.5 9,1 Z" fill="currentColor" />
-  </svg>
-);
+const numParticles = 400; // Total particles for a dense look
+
+// Helper to sample SVG path
+function samplePoints(pathD, count) {
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", pathD);
+  const length = path.getTotalLength();
+  const points = [];
+  for (let i = 0; i < count; i++) {
+    const pt = path.getPointAtLength((i / count) * length + (Math.random() * (length / count / 2)));
+    points.push({ x: pt.x, y: pt.y });
+  }
+  return points;
+}
+
+function ParticleSwarm({ phase }) {
+  const meshRef = useRef();
+  
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  
+  // Generate particle data
+  const particles = useMemo(() => {
+    const leftPoints = samplePoints(LEFT_PATH_D, numParticles / 2);
+    const rightPoints = samplePoints(RIGHT_PATH_D, numParticles / 2);
+    const allPoints = [...leftPoints, ...rightPoints];
+    
+    return new Array(numParticles).fill().map((_, i) => {
+      const isLeft = i < numParticles / 2;
+      const target = allPoints[i];
+      
+      // Target coordinates (mapping SVG 0-100 to 3D space -10 to 10)
+      const tx = (target.x - 50) * 0.15;
+      const ty = -(target.y - 50) * 0.15;
+      const tz = 0;
+
+      // Start widely scattered in 3D
+      const sx = (Math.random() - 0.5) * 40;
+      const sy = (Math.random() - 0.5) * 40;
+      const sz = (Math.random() - 0.5) * 40 - 10;
+      
+      // Color
+      const color = new THREE.Color(isLeft ? "#0057FE" : "#4A11C0");
+      color.multiplyScalar(Math.random() * 1.5 + 0.5); // Add some variation
+
+      return {
+        t: Math.random() * 100, // random time offset
+        speed: 0.01 + Math.random() * 0.01,
+        sx, sy, sz,
+        tx, ty, tz,
+        color,
+        scale: Math.random() * 0.15 + 0.05
+      };
+    });
+  }, []);
+
+  const colorArray = useMemo(() => {
+    const array = new Float32Array(numParticles * 3);
+    particles.forEach((p, i) => p.color.toArray(array, i * 3));
+    return array;
+  }, [particles]);
+
+  useFrame((state, delta) => {
+    if (!meshRef.current) return;
+    
+    // Animation progress based on phase
+    const time = state.clock.elapsedTime;
+    
+    particles.forEach((p, i) => {
+      let x, y, z;
+      
+      if (phase === 'scatter') {
+        // Swarm slowly moving
+        x = p.sx + Math.sin(time * p.speed * 50 + p.t) * 2;
+        y = p.sy + Math.cos(time * p.speed * 50 + p.t) * 2;
+        z = p.sz + Math.sin(time * p.speed * 30 + p.t) * 2;
+      } else if (phase === 'converge' || phase === 'text') {
+        // Interpolate towards target
+        // We use a simple lerp. We can track current position inside the dummy or just compute based on time
+        // But since phase changed, it's easier to just move them to tx, ty, tz smoothly.
+        // For a true lerp, we need state per particle, but for a simple effect we can just use a math function based on time since phase change.
+        // Actually, we can just continually lerp the current dummy position towards the target position.
+      }
+    });
+
+    // Instead of complex math, let's actually store current position in the particle object itself to lerp it
+    particles.forEach((p, i) => {
+      // Initialize current position if not set
+      if (p.cx === undefined) p.cx = p.sx;
+      if (p.cy === undefined) p.cy = p.sy;
+      if (p.cz === undefined) p.cz = p.sz;
+
+      // Determine target for this frame
+      let targetX, targetY, targetZ;
+      if (phase === 'scatter') {
+        targetX = p.sx + Math.sin(time * 2 + p.t) * 2;
+        targetY = p.sy + Math.cos(time * 2 + p.t) * 2;
+        targetZ = p.sz + Math.sin(time * 1 + p.t) * 2;
+      } else {
+        // Converge and form the butterfly
+        targetX = p.tx;
+        targetY = p.ty;
+        targetZ = p.tz;
+      }
+
+      // Lerp speed
+      const lerpFactor = phase === 'scatter' ? delta * 1 : delta * 3;
+
+      p.cx += (targetX - p.cx) * lerpFactor;
+      p.cy += (targetY - p.cy) * lerpFactor;
+      p.cz += (targetZ - p.cz) * lerpFactor;
+
+      dummy.position.set(p.cx, p.cy, p.cz);
+      
+      // Fade out size in text phase
+      let currentScale = p.scale;
+      if (phase === 'text') {
+        currentScale = Math.max(0, currentScale - delta * 0.2);
+        p.scale = currentScale;
+      }
+      
+      dummy.scale.set(currentScale, currentScale, currentScale);
+      
+      // Rotate slowly
+      dummy.rotation.x = time * p.speed * 20;
+      dummy.rotation.y = time * p.speed * 20;
+      
+      dummy.updateMatrix();
+      meshRef.current.setMatrixAt(i, dummy.matrix);
+    });
+    
+    meshRef.current.instanceMatrix.needsUpdate = true;
+  });
+
+  return (
+    <instancedMesh ref={meshRef} args={[null, null, numParticles]}>
+      <octahedronGeometry args={[1, 0]}>
+        <instancedBufferAttribute attach="attributes-color" args={[colorArray, 3]} />
+      </octahedronGeometry>
+      <meshBasicMaterial vertexColors toneMapped={false} />
+    </instancedMesh>
+  );
+}
+
+function CameraRig({ phase }) {
+  const { camera } = useThree();
+  
+  useFrame((state, delta) => {
+    // Camera movement
+    const time = state.clock.elapsedTime;
+    
+    if (phase === 'scatter') {
+      // Pulling back slowly
+      camera.position.z = THREE.MathUtils.lerp(camera.position.z, 20, delta * 0.5);
+      camera.position.x = Math.sin(time * 0.2) * 5;
+      camera.position.y = Math.cos(time * 0.2) * 5;
+    } else {
+      // Lock into center
+      camera.position.x = THREE.MathUtils.lerp(camera.position.x, 0, delta * 2);
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, 0, delta * 2);
+      camera.position.z = THREE.MathUtils.lerp(camera.position.z, 15, delta * 2);
+    }
+    camera.lookAt(0, 0, 0);
+  });
+  
+  return null;
+}
 
 export default function ButterflyIntro({ onComplete }) {
   const prefersReducedMotion = useReducedMotion();
-  const [phase, setPhase] = useState('scatter'); // 'scatter' -> 'converge' -> 'locked' -> 'text'
-  const [targetPoints, setTargetPoints] = useState({ left: [], right: [] });
-
-  const numParticles = 80; // 40 per wing
+  const [phase, setPhase] = useState('scatter'); // 'scatter' -> 'converge' -> 'text'
 
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -27,29 +186,9 @@ export default function ButterflyIntro({ onComplete }) {
       return () => clearTimeout(timer);
     }
 
-    // Sample points from path
-    const samplePoints = (pathD, numPoints) => {
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("d", pathD);
-      const length = path.getTotalLength();
-      const points = [];
-      for (let i = 0; i < numPoints; i++) {
-        // Sample somewhat evenly but with a little noise
-        const pt = path.getPointAtLength((i / numPoints) * length + (Math.random() * (length / numPoints / 2)));
-        points.push({ x: pt.x, y: pt.y });
-      }
-      return points;
-    };
-
-    setTargetPoints({
-      left: samplePoints(LEFT_PATH_D, numParticles / 2),
-      right: samplePoints(RIGHT_PATH_D, numParticles / 2)
-    });
-
-    // Sequence timing
-    const scatterTimer = setTimeout(() => setPhase('converge'), 2000);
-    const textTimer = setTimeout(() => setPhase('text'), 4000);
-    const completeTimer = setTimeout(onComplete, 7000);
+    const scatterTimer = setTimeout(() => setPhase('converge'), 2500);
+    const textTimer = setTimeout(() => setPhase('text'), 5000);
+    const completeTimer = setTimeout(onComplete, 7500);
 
     return () => {
       clearTimeout(scatterTimer);
@@ -58,33 +197,13 @@ export default function ButterflyIntro({ onComplete }) {
     };
   }, [prefersReducedMotion, onComplete]);
 
-  // Generate initial random positions for scattered butterflies
-  const particles = useMemo(() => {
-    const arr = [];
-    for (let i = 0; i < numParticles; i++) {
-      const isLeft = i < numParticles / 2;
-      arr.push({
-        id: i,
-        isLeft,
-        startX: Math.random() * 100, // percentage
-        startY: Math.random() * 100,
-        scatterX: Math.random() * 100,
-        scatterY: Math.random() * 100,
-        rotation: Math.random() * 360,
-        colorClass: isLeft ? "text-brand-blue" : "text-brand-violet",
-        delay: Math.random() * 0.8
-      });
-    }
-    return arr;
-  }, [numParticles]);
-
   return (
     <AnimatePresence>
       <motion.div 
         initial={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 1 }}
-        className="fixed inset-0 z-50 bg-void flex items-center justify-center overflow-hidden"
+        className="fixed inset-0 z-50 bg-[#06070C] flex items-center justify-center overflow-hidden"
       >
         <button 
           onClick={onComplete}
@@ -93,49 +212,20 @@ export default function ButterflyIntro({ onComplete }) {
           Skip Intro
         </button>
 
-        <div className="relative w-full max-w-2xl aspect-square md:aspect-video flex items-center justify-center">
-          
-          {/* Particles Stage */}
-          {(!prefersReducedMotion && targetPoints.left.length > 0) && (
-            <div className="fixed inset-0 pointer-events-none">
-              {particles.map((p, i) => {
-                const target = p.isLeft ? targetPoints.left[i % (numParticles/2)] : targetPoints.right[i % (numParticles/2)];
-                
-                let x, y, scale, opacity, rotate;
-                if (phase === 'scatter') {
-                  x = `${p.scatterX}vw`;
-                  y = `${p.scatterY}vh`;
-                  scale = Math.random() * 0.5 + 0.5;
-                  opacity = 0.6;
-                  rotate = p.rotation + 180;
-                } else if (phase === 'converge' || phase === 'text') {
-                  x = `calc(50vw + ${(target.x - 50) * 3}px)`;
-                  y = `calc(50vh + ${(target.y - 50) * 3}px)`;
-                  scale = phase === 'text' ? 0 : 1; 
-                  opacity = phase === 'text' ? 0 : 1;
-                  rotate = 0;
-                }
+        {/* 3D Scene */}
+        {!prefersReducedMotion && (
+          <div className="absolute inset-0 pointer-events-none">
+            <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+              <color attach="background" args={['#06070C']} />
+              <Stars radius={100} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
+              <ParticleSwarm phase={phase} />
+              <CameraRig phase={phase} />
+            </Canvas>
+          </div>
+        )}
 
-                return (
-                  <motion.div
-                    key={p.id}
-                    className="absolute top-0 left-0"
-                    initial={{ x: `${p.startX}vw`, y: `${p.startY}vh`, scale: 0, opacity: 0, rotate: p.rotation }}
-                    animate={{ x, y, scale, opacity, rotate }}
-                    transition={
-                      phase === 'scatter' ? { duration: 3, ease: "easeOut", delay: p.delay } :
-                      phase === 'converge' ? { duration: 1.8, ease: [0.4, 0, 0.2, 1] } : // No delay, fluid sweep
-                      { duration: 0.8, ease: "easeIn" }
-                    }
-                  >
-                    <ParticleShape colorClass={p.colorClass} />
-                  </motion.div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Locked SVG Mark */}
+        {/* 2D Overlay (Logo + Text) */}
+        <div className="relative w-full max-w-2xl aspect-square md:aspect-video flex items-center justify-center pointer-events-none">
           <motion.div 
             className="absolute z-10 flex flex-col items-center justify-center"
             initial={{ opacity: 0, scale: 0.95 }}
@@ -146,7 +236,7 @@ export default function ButterflyIntro({ onComplete }) {
             transition={{ 
               duration: 2, 
               ease: "easeInOut",
-              delay: phase === 'converge' ? 1 : 0 // Fade in as particles finish converging
+              delay: phase === 'converge' ? 1.5 : 0 // Fade in slightly after convergence starts
             }}
           >
             <div className={`relative ${(phase === 'text') ? 'drop-shadow-[0_0_40px_rgba(74,17,192,0.6)]' : ''} transition-all duration-1000`}>
@@ -160,13 +250,13 @@ export default function ButterflyIntro({ onComplete }) {
               transition={{ duration: 1, ease: "easeOut" }}
             >
               <h1 className="font-display text-4xl md:text-5xl font-bold tracking-[0.2em] mb-3">
-                <span className="text-ink">DESIGN BEYOND </span>
-                <span className="text-brand-violet-light">DIMENSIONS</span>
+                <span className="text-white">DESIGN BEYOND </span>
+                <span className="text-[#0057FE]">DIMENSIONS</span>
               </h1>
             </motion.div>
           </motion.div>
-
         </div>
+
       </motion.div>
     </AnimatePresence>
   );
