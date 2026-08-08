@@ -12,15 +12,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Nodemailer transport setup
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.ethereal.email',
-  port: process.env.SMTP_PORT || 587,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  }
-});
+// We will create the transporter dynamically in the route to ensure env vars are loaded
 
 // Order Endpoint
 app.post('/api/orders', async (req, res) => {
@@ -46,6 +38,15 @@ app.post('/api/orders', async (req, res) => {
   `;
 
   try {
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.ethereal.email',
+      port: process.env.SMTP_PORT || 587,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      }
+    });
+
     // 1. Send Invoice to Customer
     await transporter.sendMail({
       from: `"XYNEX Orders" <${process.env.SMTP_USER}>`,
@@ -65,7 +66,7 @@ app.post('/api/orders', async (req, res) => {
     res.status(200).json({ success: true, message: 'Order processed successfully.' });
   } catch (error) {
     console.error('Error processing order emails:', error);
-    res.status(500).json({ success: false, error: 'Failed to process order.' });
+    res.status(500).json({ success: false, error: 'Failed to process order.', details: error.message });
   }
 });
 
@@ -78,6 +79,15 @@ app.post('/api/contact', async (req, res) => {
   }
 
   try {
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.ethereal.email',
+      port: process.env.SMTP_PORT || 587,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      }
+    });
+
     const info = await transporter.sendMail({
       from: `"${name}" <${email}>`,
       to: process.env.SMTP_FROM || 'hello@xynex.com', 
