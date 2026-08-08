@@ -1,0 +1,7 @@
+<svg width="200" height="200" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Left Wing (Blue) -->
+  <path id="left-wing" d="M20,10 L45,40 C50,45 50,55 45,60 L20,90 C15,95 5,90 10,80 L25,50 L10,20 C5,10 15,5 20,10 Z" fill="#0057FE" />
+  
+  <!-- Right Wing (Violet) -->
+  <path id="right-wing" d="M80,10 L55,40 C50,45 50,55 55,60 L80,90 C85,95 95,90 90,80 L75,50 L90,20 C95,10 85,5 80,10 Z" fill="#4A11C0" />
+</svg>
