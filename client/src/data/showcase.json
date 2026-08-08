@@ -1,0 +1,35 @@
+[
+  {
+    "id": "room-001",
+    "title": "Modern Executive Office",
+    "description": "A sleek, minimalist office layout designed for maximum productivity and executive presence.",
+    "thumbnail": null,
+    "products": [
+      { "name": "ErgoPro Executive Chair", "qty": 1, "price": 450 },
+      { "name": "Glass Desk with Chrome Legs", "qty": 1, "price": 800 },
+      { "name": "Minimalist Bookshelf", "qty": 2, "price": 300 }
+    ]
+  },
+  {
+    "id": "room-002",
+    "title": "Collaborative Lounge",
+    "description": "An open seating area for team discussions and casual work.",
+    "thumbnail": null,
+    "products": [
+      { "name": "Modular Sofa Segment", "qty": 4, "price": 250 },
+      { "name": "Low Coffee Table", "qty": 1, "price": 150 },
+      { "name": "Acoustic Wall Panels", "qty": 6, "price": 80 }
+    ]
+  },
+  {
+    "id": "room-003",
+    "title": "Zen Meeting Room",
+    "description": "A calm, nature-inspired conference room with wood accents.",
+    "thumbnail": null,
+    "products": [
+      { "name": "Oak Conference Table", "qty": 1, "price": 1200 },
+      { "name": "Ergonomic Mesh Chair", "qty": 8, "price": 220 },
+      { "name": "Potted Ficus Tree", "qty": 2, "price": 110 }
+    ]
+  }
+]
