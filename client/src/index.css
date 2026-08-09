@@ -30,6 +30,10 @@
   }
 
   body {
-    @apply bg-void text-ink font-body antialiased;
+    background-color: var(--color-void);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }

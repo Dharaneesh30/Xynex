@@ -39,8 +39,8 @@ function ParticleSwarm({ phase }) {
       const target = allPoints[i];
       
       // Target coordinates (mapping SVG 0-100 to 3D space -10 to 10)
-      const tx = (target.x - 50) * 0.15;
-      const ty = -(target.y - 50) * 0.15;
+      const tx = (target.x - 50) * 0.045;
+      const ty = -(target.y - 50) * 0.045;
       const tz = 0;
 
       // Start widely scattered in 3D
