@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import logoUrl from '../../assets/logo/xynex-mark.svg';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -31,7 +32,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
           <img 
-            src="/src/assets/logo/xynex-mark.svg" 
+            src={logoUrl}
             alt="XYNEX" 
             className="h-8 w-8 transition-transform group-hover:scale-105" 
           />

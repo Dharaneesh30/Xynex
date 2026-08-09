@@ -4,6 +4,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Stars } from '@react-three/drei';
 import * as THREE from 'three';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import logoUrl from '../../assets/logo/xynex-mark.svg';
 
 const LEFT_PATH_D = "M20,10 L45,40 C50,45 50,55 45,60 L20,90 C15,95 5,90 10,80 L25,50 L10,20 C5,10 15,5 20,10 Z";
 const RIGHT_PATH_D = "M80,10 L55,40 C50,45 50,55 55,60 L80,90 C85,95 95,90 90,80 L75,50 L90,20 C95,10 85,5 80,10 Z";
@@ -231,7 +232,7 @@ export default function ButterflyIntro({ onComplete }) {
             }}
           >
             <div className={`relative ${(phase === 'text') ? 'drop-shadow-[0_0_40px_rgba(74,17,192,0.6)]' : ''} transition-all duration-1000`}>
-              <img src="/src/assets/logo/xynex-mark.svg" alt="XYNEX Logo" className="w-[200px] h-[200px] md:w-[300px] md:h-[300px]" />
+              <img src={logoUrl} alt="XYNEX Logo" className="w-[200px] h-[200px] md:w-[300px] md:h-[300px]" />
             </div>
 
             <motion.div 

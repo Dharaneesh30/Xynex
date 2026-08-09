@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import logoUrl from '../../assets/logo/xynex-mark.svg';
 
 export default function Footer() {
   return (
@@ -9,7 +10,7 @@ export default function Footer() {
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4 group">
               <img 
-                src="/src/assets/logo/xynex-mark.svg" 
+                src={logoUrl}
                 alt="XYNEX" 
                 className="h-6 w-6 grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all" 
               />
