@@ -8,7 +8,7 @@ import Card from '../../components/common/Card';
 import { useCart } from '../../context/CartContext';
 import catalogData from '../../data/catalog.json';
 
-function PlacedItem({ item, position, updatePosition }) {
+function PlacedItem({ item, position, _updatePosition }) {
   // item.dimensions are width(x), height(y), depth(z)
   return (
     <PivotControls

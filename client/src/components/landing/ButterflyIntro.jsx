@@ -38,7 +38,9 @@ function ParticleSwarm({ phase }) {
     // FOV is 45, final Z is 15. Visible height at Z=0 is: 2 * 15 * tan(22.5 deg) ≈ 12.4264
     // scale = (300 / windowHeight) * (12.4264 / 100)
     const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 1080;
-    const scale = (300 / windowHeight) * 0.124264;
+    const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+    const logoSize = windowWidth < 768 ? 200 : 300;
+    const scale = (logoSize / windowHeight) * 0.124264;
 
     return new Array(numParticles).fill().map((_, i) => {
       const isLeft = i < numParticles / 2;
@@ -81,23 +83,6 @@ function ParticleSwarm({ phase }) {
     // Animation progress based on phase
     const time = state.clock.elapsedTime;
     
-    particles.forEach((p, i) => {
-      let x, y, z;
-      
-      if (phase === 'scatter') {
-        // Swarm slowly moving
-        x = p.sx + Math.sin(time * p.speed * 50 + p.t) * 2;
-        y = p.sy + Math.cos(time * p.speed * 50 + p.t) * 2;
-        z = p.sz + Math.sin(time * p.speed * 30 + p.t) * 2;
-      } else if (phase === 'converge' || phase === 'text') {
-        // Interpolate towards target
-        // We use a simple lerp. We can track current position inside the dummy or just compute based on time
-        // But since phase changed, it's easier to just move them to tx, ty, tz smoothly.
-        // For a true lerp, we need state per particle, but for a simple effect we can just use a math function based on time since phase change.
-        // Actually, we can just continually lerp the current dummy position towards the target position.
-      }
-    });
-
     // Instead of complex math, let's actually store current position in the particle object itself to lerp it
     particles.forEach((p, i) => {
       // Initialize current position if not set
@@ -246,16 +231,16 @@ export default function ButterflyIntro({ onComplete }) {
             }}
           >
             <div className={`relative ${(phase === 'text') ? 'drop-shadow-[0_0_40px_rgba(74,17,192,0.6)]' : ''} transition-all duration-1000`}>
-              <img src="/src/assets/logo/xynex-mark.svg" alt="XYNEX Logo" className="w-[300px] h-[300px]" />
+              <img src="/src/assets/logo/xynex-mark.svg" alt="XYNEX Logo" className="w-[200px] h-[200px] md:w-[300px] md:h-[300px]" />
             </div>
 
             <motion.div 
-              className="absolute top-[100%] left-1/2 -translate-x-1/2 pt-8 text-center w-max"
+              className="absolute top-[100%] left-1/2 -translate-x-1/2 pt-6 md:pt-8 text-center w-[90vw] md:w-max"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: phase === 'text' ? 1 : 0, y: phase === 'text' ? 0 : 20 }}
               transition={{ duration: 1, ease: "easeOut" }}
             >
-              <h1 className="font-display text-4xl md:text-5xl font-bold tracking-[0.2em] whitespace-nowrap mb-3">
+              <h1 className="font-display text-2xl sm:text-3xl md:text-5xl font-bold tracking-[0.1em] md:tracking-[0.2em] mb-3">
                 <span className="text-white">DESIGN BEYOND </span>
                 <span className="text-[#0057FE]">DIMENSIONS</span>
               </h1>

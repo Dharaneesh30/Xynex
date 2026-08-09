@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export function useSessionIntroFlag() {
   const [showIntro, setShowIntro] = useState(() => {

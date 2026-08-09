@@ -29,7 +29,7 @@ export default function Contact() {
       } else {
         setStatus({ type: 'error', message: data.error || 'Something went wrong. Please try again.' });
       }
-    } catch (error) {
+    } catch {
       setStatus({ type: 'error', message: 'Network error. Please try again later.' });
     } finally {
       setLoading(false);
