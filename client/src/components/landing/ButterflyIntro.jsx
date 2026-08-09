@@ -34,13 +34,19 @@ function ParticleSwarm({ phase }) {
     const rightPoints = samplePoints(RIGHT_PATH_D, numParticles / 2);
     const allPoints = [...leftPoints, ...rightPoints];
     
+    // Calculate precise scale to match 300px logo on screen
+    // FOV is 45, final Z is 15. Visible height at Z=0 is: 2 * 15 * tan(22.5 deg) ≈ 12.4264
+    // scale = (300 / windowHeight) * (12.4264 / 100)
+    const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 1080;
+    const scale = (300 / windowHeight) * 0.124264;
+
     return new Array(numParticles).fill().map((_, i) => {
       const isLeft = i < numParticles / 2;
       const target = allPoints[i];
       
-      // Target coordinates (mapping SVG 0-100 to 3D space -10 to 10)
-      const tx = (target.x - 50) * 0.045;
-      const ty = -(target.y - 50) * 0.045;
+      // Target coordinates
+      const tx = (target.x - 50) * scale;
+      const ty = -(target.y - 50) * scale;
       const tz = 0;
 
       // Start widely scattered in 3D
@@ -227,7 +233,7 @@ export default function ButterflyIntro({ onComplete }) {
         {/* 2D Overlay (Logo + Text) */}
         <div className="relative w-full max-w-2xl aspect-square md:aspect-video flex items-center justify-center pointer-events-none">
           <motion.div 
-            className="absolute z-10 flex flex-col items-center justify-center"
+            className="absolute z-10 flex items-center justify-center"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ 
               opacity: (phase === 'text' || phase === 'converge') ? 1 : 0,
@@ -244,12 +250,12 @@ export default function ButterflyIntro({ onComplete }) {
             </div>
 
             <motion.div 
-              className="mt-8 text-center"
+              className="absolute top-[100%] left-1/2 -translate-x-1/2 pt-8 text-center w-max"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: phase === 'text' ? 1 : 0, y: phase === 'text' ? 0 : 20 }}
               transition={{ duration: 1, ease: "easeOut" }}
             >
-              <h1 className="font-display text-4xl md:text-5xl font-bold tracking-[0.2em] mb-3">
+              <h1 className="font-display text-4xl md:text-5xl font-bold tracking-[0.2em] whitespace-nowrap mb-3">
                 <span className="text-white">DESIGN BEYOND </span>
                 <span className="text-[#0057FE]">DIMENSIONS</span>
               </h1>
