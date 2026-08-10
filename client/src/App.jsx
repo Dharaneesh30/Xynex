@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
+import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { useReducedMotion } from './hooks/useReducedMotion';
 
@@ -13,6 +14,9 @@ import Universe from './pages/universe/Universe';
 import Showcase from './pages/universe/Showcase';
 import Design from './pages/universe/Design';
 import Cart from './pages/universe/Cart';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
+import Profile from './pages/auth/Profile';
 import NotFound from './pages/NotFound';
 
 function PageTransition({ children }) {
@@ -48,6 +52,9 @@ function AppRoutes() {
           <Route path="/universe/design" element={<Design />} />
           <Route path="/universe/cart" element={<Cart />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </PageTransition>
@@ -58,11 +65,13 @@ function AppRoutes() {
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 

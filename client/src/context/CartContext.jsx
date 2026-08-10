@@ -12,6 +12,7 @@ export function CartProvider({ children }) {
     const saved = localStorage.getItem('xynex_cart');
     return saved ? JSON.parse(saved) : [];
   });
+  const [designSnapshot, setDesignSnapshot] = useState(null);
 
   useEffect(() => {
     localStorage.setItem('xynex_cart', JSON.stringify(cartItems));
@@ -53,7 +54,9 @@ export function CartProvider({ children }) {
     removeFromCart,
     updateQuantity,
     clearCart,
-    cartCount
+    cartCount,
+    designSnapshot,
+    setDesignSnapshot
   };
 
   return (

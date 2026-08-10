@@ -12,8 +12,8 @@ export default function FurnitureModel({ item }) {
   const darkMat = <meshStandardMaterial color="#222222" roughness={0.8} />;
   const woodMat = <meshStandardMaterial color="#8b5a2b" roughness={0.9} />;
 
-  if (id === 'prod-001' || id === 'prod-004') {
-    // Desk or Coffee Table
+  if (id === 'prod-001' || id === 'prod-004' || id === 'prod-009') {
+    // Desk, Coffee Table, or Dining Table
     const legW = 0.05;
     return (
       <group>
@@ -43,8 +43,8 @@ export default function FurnitureModel({ item }) {
     );
   }
 
-  if (id === 'prod-002') {
-    // Chair
+  if (id === 'prod-002' || id === 'prod-010') {
+    // Office Chair or Dining Chair
     const seatH = 0.45;
     return (
       <group>
@@ -58,22 +58,34 @@ export default function FurnitureModel({ item }) {
           <boxGeometry args={[w, h - seatH, 0.1]} />
           {mainMat}
         </mesh>
-        {/* Center column */}
-        <mesh position={[0, seatH/2, 0]} castShadow receiveShadow>
-          <cylinderGeometry args={[0.05, 0.05, seatH]} />
-          {darkMat}
-        </mesh>
-        {/* Base star */}
-        <mesh position={[0, 0.05, 0]} castShadow receiveShadow>
-          <cylinderGeometry args={[w/2, w/2, 0.1, 5]} />
-          {darkMat}
-        </mesh>
+        {id === 'prod-002' ? (
+          <>
+            {/* Center column */}
+            <mesh position={[0, seatH/2, 0]} castShadow receiveShadow>
+              <cylinderGeometry args={[0.05, 0.05, seatH]} />
+              {darkMat}
+            </mesh>
+            {/* Base star */}
+            <mesh position={[0, 0.05, 0]} castShadow receiveShadow>
+              <cylinderGeometry args={[w/2, w/2, 0.1, 5]} />
+              {darkMat}
+            </mesh>
+          </>
+        ) : (
+          <>
+            {/* 4 simple legs */}
+            <mesh position={[-w/2 + 0.05, seatH/2, -d/2 + 0.05]} castShadow receiveShadow><cylinderGeometry args={[0.03, 0.03, seatH]}/>{darkMat}</mesh>
+            <mesh position={[w/2 - 0.05, seatH/2, -d/2 + 0.05]} castShadow receiveShadow><cylinderGeometry args={[0.03, 0.03, seatH]}/>{darkMat}</mesh>
+            <mesh position={[-w/2 + 0.05, seatH/2, d/2 - 0.05]} castShadow receiveShadow><cylinderGeometry args={[0.03, 0.03, seatH]}/>{darkMat}</mesh>
+            <mesh position={[w/2 - 0.05, seatH/2, d/2 - 0.05]} castShadow receiveShadow><cylinderGeometry args={[0.03, 0.03, seatH]}/>{darkMat}</mesh>
+          </>
+        )}
       </group>
     );
   }
 
-  if (id === 'prod-003') {
-    // Sofa
+  if (id === 'prod-003' || id === 'prod-016') {
+    // Sofa or Armchair
     const seatH = 0.4;
     return (
       <group>
@@ -177,6 +189,88 @@ export default function FurnitureModel({ item }) {
         {/* Canvas front */}
         <mesh position={[0, h/2, d/2 + 0.005]} castShadow receiveShadow>
           <planeGeometry args={[w - 0.1, h - 0.1]} />
+          {mainMat}
+        </mesh>
+      </group>
+    );
+  }
+
+  if (id === 'prod-011') {
+    // Queen Bed
+    const mattressH = 0.4;
+    return (
+      <group>
+        {/* Frame / Base */}
+        <mesh position={[0, mattressH/2, 0]} castShadow receiveShadow>
+          <boxGeometry args={[w, mattressH, d]} />
+          {woodMat}
+        </mesh>
+        {/* Mattress */}
+        <mesh position={[0, mattressH + 0.1, 0]} castShadow receiveShadow>
+          <boxGeometry args={[w - 0.1, 0.2, d - 0.1]} />
+          {mainMat}
+        </mesh>
+        {/* Headboard */}
+        <mesh position={[0, h/2, -d/2 + 0.05]} castShadow receiveShadow>
+          <boxGeometry args={[w, h, 0.1]} />
+          {woodMat}
+        </mesh>
+      </group>
+    );
+  }
+
+  if (id === 'prod-012' || id === 'prod-015') {
+    // Nightstand or TV Console (simple boxy storage)
+    return (
+      <group>
+        <mesh position={[0, h/2, 0]} castShadow receiveShadow>
+          <boxGeometry args={[w, h, d]} />
+          {mainMat}
+        </mesh>
+        {/* Simple drawer lines to simulate detail */}
+        <mesh position={[0, h/2, d/2 + 0.01]} receiveShadow>
+          <planeGeometry args={[w - 0.1, h - 0.1]} />
+          <meshStandardMaterial color="#222" opacity={0.3} transparent />
+        </mesh>
+      </group>
+    );
+  }
+
+  if (id === 'prod-013') {
+    // Table Lamp
+    return (
+      <group>
+        {/* Base */}
+        <mesh position={[0, 0.05, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[w/3, w/3, 0.1]} />
+          {darkMat}
+        </mesh>
+        {/* Pole */}
+        <mesh position={[0, h/2, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.02, 0.02, h]} />
+          {darkMat}
+        </mesh>
+        {/* Shade */}
+        <mesh position={[0, h - 0.1, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[w/2, w/2 + 0.05, 0.2]} />
+          {mainMat}
+        </mesh>
+      </group>
+    );
+  }
+
+  if (id === 'prod-014') {
+    // Potted Plant
+    return (
+      <group>
+        {/* Pot */}
+        <mesh position={[0, 0.2, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.15, 0.1, 0.4]} />
+          {darkMat}
+        </mesh>
+        {/* Leaves (abstracted as a sphere) */}
+        <mesh position={[0, h/2 + 0.2, 0]} castShadow receiveShadow>
+          <sphereGeometry args={[w/2, 16, 16]} />
           {mainMat}
         </mesh>
       </group>

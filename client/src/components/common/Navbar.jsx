@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
+import Button from './Button';
 import logoUrl from '../../assets/logo/xynex-mark.svg';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const { cartCount } = useCart();
+  const { user } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -57,23 +60,27 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center">
+        <div className="hidden md:flex items-center space-x-6">
           <Link 
             to="/universe/cart" 
-            className="relative p-2 text-ink-muted hover:text-ink transition-colors group"
+            className="relative text-ink hover:text-brand-blue transition-colors"
             aria-label="Cart"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:stroke-brand-blue transition-colors">
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
             {cartCount > 0 && (
-              <span className="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold text-ink bg-brand-violet rounded-full">
+              <span className="absolute -top-2 -right-2 bg-brand-violet-light text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
                 {cartCount}
               </span>
             )}
           </Link>
+          {user ? (
+            <Link to="/profile" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <img src={user.avatar} alt="Profile" className="w-8 h-8 rounded-full border border-ink/10" />
+            </Link>
+          ) : (
+            <Button to="/login" variant="ghost">Log In</Button>
+          )}
+          <Button to="/universe" variant="primary">Enter Universe</Button>
         </div>
       </div>
     </nav>

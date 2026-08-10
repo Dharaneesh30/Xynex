@@ -2,6 +2,7 @@
   {
     "id": "prod-001",
     "name": "Executive Desk",
+    "category": "Tables",
     "price": 800,
     "color": "#0057FE",
     "dimensions": { "width": 1.8, "height": 0.75, "depth": 0.8 },
@@ -10,6 +11,7 @@
   {
     "id": "prod-002",
     "name": "Ergonomic Chair",
+    "category": "Seating",
     "price": 350,
     "color": "#4A11C0",
     "dimensions": { "width": 0.6, "height": 1.1, "depth": 0.6 },
@@ -18,6 +20,7 @@
   {
     "id": "prod-003",
     "name": "Lounge Sofa",
+    "category": "Seating",
     "price": 1200,
     "color": "#7C3AED",
     "dimensions": { "width": 2.2, "height": 0.8, "depth": 0.9 },
@@ -26,6 +29,7 @@
   {
     "id": "prod-004",
     "name": "Coffee Table",
+    "category": "Tables",
     "price": 250,
     "color": "#F4F5FA",
     "dimensions": { "width": 1.0, "height": 0.45, "depth": 0.6 },
@@ -34,6 +38,7 @@
   {
     "id": "prod-005",
     "name": "Floor Lamp",
+    "category": "Lighting",
     "price": 120,
     "color": "#D1D5DB",
     "dimensions": { "width": 0.4, "height": 1.6, "depth": 0.4 },
@@ -42,6 +47,7 @@
   {
     "id": "prod-006",
     "name": "Pendant Light",
+    "category": "Lighting",
     "price": 80,
     "color": "#FCD34D",
     "dimensions": { "width": 0.4, "height": 0.4, "depth": 0.4 },
@@ -50,6 +56,7 @@
   {
     "id": "prod-007",
     "name": "Storage Bookshelf",
+    "category": "Storage",
     "price": 450,
     "color": "#9CA3AF",
     "dimensions": { "width": 0.9, "height": 1.8, "depth": 0.3 },
@@ -58,9 +65,82 @@
   {
     "id": "prod-008",
     "name": "Abstract Wall Art",
+    "category": "Decor",
     "price": 180,
     "color": "#8B5CF6",
     "dimensions": { "width": 0.8, "height": 1.0, "depth": 0.05 },
     "thumbnail": "/src/assets/products/furniture-wall-art.png"
+  },
+  {
+    "id": "prod-009",
+    "name": "Dining Table",
+    "category": "Tables",
+    "price": 950,
+    "color": "#8b5a2b",
+    "dimensions": { "width": 1.6, "height": 0.75, "depth": 0.9 },
+    "thumbnail": "/src/assets/products/furniture-dining-table.png"
+  },
+  {
+    "id": "prod-010",
+    "name": "Dining Chair",
+    "category": "Seating",
+    "price": 150,
+    "color": "#d2b48c",
+    "dimensions": { "width": 0.45, "height": 0.9, "depth": 0.45 },
+    "thumbnail": "/src/assets/products/furniture-armchair.png"
+  },
+  {
+    "id": "prod-011",
+    "name": "Queen Bed",
+    "category": "Beds",
+    "price": 1400,
+    "color": "#ffffff",
+    "dimensions": { "width": 1.6, "height": 0.6, "depth": 2.1 },
+    "thumbnail": "/src/assets/products/furniture-sofa.png"
+  },
+  {
+    "id": "prod-012",
+    "name": "Nightstand",
+    "category": "Storage",
+    "price": 180,
+    "color": "#8b5a2b",
+    "dimensions": { "width": 0.5, "height": 0.6, "depth": 0.4 },
+    "thumbnail": "/src/assets/products/furniture-storage-bookshelf.png"
+  },
+  {
+    "id": "prod-013",
+    "name": "Table Lamp",
+    "category": "Lighting",
+    "price": 65,
+    "color": "#e0e0e0",
+    "dimensions": { "width": 0.25, "height": 0.4, "depth": 0.25 },
+    "thumbnail": "/src/assets/products/furniture-floor-lamp.png"
+  },
+  {
+    "id": "prod-014",
+    "name": "Potted Plant",
+    "category": "Decor",
+    "price": 90,
+    "color": "#2e8b57",
+    "dimensions": { "width": 0.4, "height": 1.2, "depth": 0.4 },
+    "thumbnail": "/src/assets/products/furniture-wall-art.png"
+  },
+  {
+    "id": "prod-015",
+    "name": "TV Console",
+    "category": "Storage",
+    "price": 420,
+    "color": "#5c4033",
+    "dimensions": { "width": 1.5, "height": 0.5, "depth": 0.4 },
+    "thumbnail": "/src/assets/products/furniture-storage-bookshelf.png"
+  },
+  {
+    "id": "prod-016",
+    "name": "Plush Armchair",
+    "category": "Seating",
+    "price": 550,
+    "color": "#ff7f50",
+    "dimensions": { "width": 0.8, "height": 0.85, "depth": 0.8 },
+    "thumbnail": "/src/assets/products/furniture-armchair.png"
   }
 ]

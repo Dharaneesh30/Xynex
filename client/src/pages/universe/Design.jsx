@@ -1,10 +1,11 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Grid, PivotControls, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
+import Modal from '../../components/common/Modal';
 import { useCart } from '../../context/CartContext';
 import catalogData from '../../data/catalog.json';
 import FurnitureModel from '../../components/universe/FurnitureModel';
@@ -62,9 +63,15 @@ function RoomWalls({ width, length }) {
 }
 
 export default function Design() {
-  const { addToCart } = useCart();
+  const { addToCart, setDesignSnapshot } = useCart();
   const [roomDim, setRoomDim] = useState({ width: 5, length: 5 });
   const [placedItems, setPlacedItems] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [isQueryModalOpen, setIsQueryModalOpen] = useState(false);
+  const canvasRef = useRef();
+
+  const categories = ['All', ...new Set(catalogData.map(item => item.category))];
+  const filteredCatalog = activeCategory === 'All' ? catalogData : catalogData.filter(item => item.category === activeCategory);
 
   const handleAddToRoom = (product) => {
     setPlacedItems(prev => [
@@ -79,6 +86,46 @@ export default function Design() {
 
   const calculateTotal = () => {
     return placedItems.reduce((sum, item) => sum + item.price, 0);
+  };
+
+  const captureSnapshot = () => {
+    if (canvasRef.current) {
+      const dataUrl = canvasRef.current.toDataURL('image/jpeg', 0.8);
+      setDesignSnapshot(dataUrl);
+      return dataUrl;
+    }
+    return null;
+  };
+
+  const handleSendQuery = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const snapshotUrl = captureSnapshot();
+    
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const res = await fetch(`${apiUrl}/api/design-query`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.get('name'),
+          email: formData.get('email'),
+          message: formData.get('message'),
+          image: snapshotUrl,
+          items: placedItems
+        })
+      });
+
+      if (res.ok) {
+        alert("Your design query has been sent!");
+        setIsQueryModalOpen(false);
+      } else {
+        alert("Failed to send query.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Network error.");
+    }
   };
 
   return (
@@ -115,9 +162,10 @@ export default function Design() {
             <span className="font-mono text-brand-blue font-medium">${calculateTotal().toLocaleString()}</span>
           </div>
           <Button 
-            className="w-full" 
+            className="w-full mb-3" 
             variant="primary"
             onClick={() => {
+              captureSnapshot();
               placedItems.forEach(item => addToCart(item));
               alert(`${placedItems.length} items added to cart!`);
             }}
@@ -125,12 +173,19 @@ export default function Design() {
           >
             Add Layout to Cart
           </Button>
+          <Button 
+            className="w-full" 
+            variant="outline"
+            onClick={() => setIsQueryModalOpen(true)}
+          >
+            Ask about Design
+          </Button>
         </div>
       </div>
 
       {/* Center Panel: 3D Canvas */}
       <div className="flex-grow relative bg-void overflow-hidden">
-        <Canvas shadows camera={{ position: [5, 5, 5], fov: 50 }}>
+        <Canvas shadows camera={{ position: [5, 5, 5], fov: 50 }} gl={{ preserveDrawingBuffer: true }} ref={canvasRef}>
           <color attach="background" args={['#06070C']} />
           <ambientLight intensity={0.5} />
           <directionalLight position={[10, 10, 5]} intensity={1} castShadow shadow-mapSize={[1024, 1024]} />
@@ -172,11 +227,28 @@ export default function Design() {
       </div>
 
       {/* Right Panel: Catalog */}
-      <div className="w-full md:w-80 bg-surface border-l border-ink/5 p-6 overflow-y-auto flex-shrink-0 z-10">
-        <h2 className="font-display font-semibold text-lg mb-6 text-ink">Catalog</h2>
+      <div className="w-full md:w-80 bg-surface border-l border-ink/5 p-6 overflow-y-auto flex-shrink-0 z-10 flex flex-col">
+        <h2 className="font-display font-semibold text-lg mb-4 text-ink">Catalog</h2>
         
-        <div className="space-y-4">
-          {catalogData.map(product => (
+        {/* Category Tabs */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
+                activeCategory === cat 
+                  ? 'bg-brand-blue text-white' 
+                  : 'bg-ink/5 text-ink hover:bg-ink/10'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <div className="space-y-4 flex-grow overflow-y-auto pr-2">
+          {filteredCatalog.map(product => (
             <Card key={product.id} className="p-4 flex flex-col group">
               <div className="flex justify-between items-start mb-2">
                 <h4 className="font-medium text-sm">{product.name}</h4>
@@ -211,6 +283,26 @@ export default function Design() {
           ))}
         </div>
       </div>
+
+      <Modal 
+        isOpen={isQueryModalOpen} 
+        onClose={() => setIsQueryModalOpen(false)}
+        title="Ask About Your Design"
+      >
+        <form onSubmit={handleSendQuery} className="space-y-6">
+          <p className="text-sm text-ink-muted mb-4">Send a snapshot of your room and the placed items to our design team for expert advice.</p>
+          <Input label="Name" name="name" required />
+          <Input label="Email" name="email" type="email" required />
+          <div>
+            <label className="block text-sm font-medium mb-1">Your Question</label>
+            <textarea name="message" className="w-full bg-surface border border-ink/10 rounded px-3 py-2 text-sm focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50" rows="4" required></textarea>
+          </div>
+          <div className="pt-4 flex justify-end gap-4">
+            <Button type="button" variant="ghost" onClick={() => setIsQueryModalOpen(false)}>Cancel</Button>
+            <Button type="submit" variant="primary">Send Query</Button>
+          </div>
+        </form>
+      </Modal>
 
     </div>
   );

@@ -1,15 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ButterflyIntro from '../components/landing/ButterflyIntro';
 import CornerFrame from '../components/common/CornerFrame';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
 import { useSessionIntroFlag } from '../hooks/useSessionIntroFlag';
-import reviews from '../data/reviews.json';
-
-// TODO: Replace placeholder reviews in data/reviews.json before public launch
 
 export default function Home() {
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+        const res = await fetch(`${apiUrl}/api/reviews`);
+        const data = await res.json();
+        if (data.success && data.reviews) {
+          setReviews(data.reviews);
+        }
+      } catch (err) {
+        console.error('Failed to fetch reviews', err);
+      }
+    };
+    fetchReviews();
+  }, []);
   const { showIntro, markIntroSeen } = useSessionIntroFlag();
 
   const features = [
@@ -130,20 +144,19 @@ export default function Home() {
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               {reviews.map((r) => (
-                <Card key={r.id} className="p-6 flex flex-col justify-between">
+                <Card key={r._id || r.id} className="p-6 flex flex-col justify-between">
                   <div>
                     <div className="flex gap-1 mb-4">
-                      {[...Array(r.rating)].map((_, i) => (
+                      {[...Array(r.rating || 5)].map((_, i) => (
                         <svg key={i} className="w-4 h-4 text-brand-blue" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                       ))}
                     </div>
-                    <p className="text-ink-muted italic mb-6">"{r.quote}"</p>
+                    <p className="text-ink-muted italic mb-6">"{r.text || r.quote}"</p>
                   </div>
                   <div className="flex items-center gap-4">
                     <img src={r.avatar} alt={r.name} className="w-12 h-12 rounded-full object-cover border border-ink/10" />
                     <div>
                       <p className="font-medium text-sm">{r.name}</p>
-                      <p className="text-xs text-ink-muted/50 uppercase tracking-wide">{r.location}</p>
                     </div>
                   </div>
                 </Card>
