@@ -25,7 +25,8 @@ export default function Cart() {
 
     try {
       // 1. Send Order to Backend (Emails invoice to customer and owner)
-      const res = await fetch('http://localhost:3001/api/orders', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const res = await fetch(`${apiUrl}/api/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ items: cartItems, customer, total })

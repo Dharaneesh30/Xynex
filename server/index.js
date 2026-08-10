@@ -40,7 +40,8 @@ app.post('/api/orders', async (req, res) => {
   try {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.ethereal.email',
-      port: process.env.SMTP_PORT || 587,
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: Number(process.env.SMTP_PORT) === 465,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS
@@ -81,7 +82,8 @@ app.post('/api/contact', async (req, res) => {
   try {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.ethereal.email',
-      port: process.env.SMTP_PORT || 587,
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: Number(process.env.SMTP_PORT) === 465,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS
@@ -89,7 +91,8 @@ app.post('/api/contact', async (req, res) => {
     });
 
     const info = await transporter.sendMail({
-      from: `"${name}" <${email}>`,
+      from: `"XYNEX Website" <${process.env.SMTP_USER}>`,
+      replyTo: `"${name}" <${email}>`,
       to: process.env.SMTP_FROM || 'hello@xynex.com', 
       subject: `New Contact Request from ${name}`,
       text: message,
