@@ -56,10 +56,10 @@ export default function About() {
 
       {/* Team */}
       <section className="mb-20">
-        <h2 className="text-3xl font-display font-semibold mb-12">The Team</h2>
-        <div className="grid md:grid-cols-3 gap-8">
+        <h2 className="text-3xl font-display font-semibold mb-12 text-center">The Founder</h2>
+        <div className="flex justify-center">
           {team.map((member) => (
-            <Card key={member.id} className="overflow-hidden group">
+            <Card key={member.id} className="overflow-hidden group max-w-sm w-full">
               <div className="aspect-[4/5] bg-surface-elevated flex items-center justify-center relative border-b border-ink/5">
                 {member.image ? (
                   <img src={member.image} alt={member.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />

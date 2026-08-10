@@ -1,23 +1,9 @@
 [
   {
     "id": 1,
-    "name": "Founder Name",
+    "name": "Dharaneesh",
     "role": "Founder & CEO",
-    "bio": "Add a sentence here about the founder's vision for intelligent space planning.",
-    "image": null
-  },
-  {
-    "id": 2,
-    "name": "Team Member Name",
-    "role": "Lead Architect",
-    "bio": "Add a sentence here about their expertise in 3D visualization.",
-    "image": null
-  },
-  {
-    "id": 3,
-    "name": "Team Member Name",
-    "role": "Head of Product",
-    "bio": "Add a sentence here about driving the XYNEX platform forward.",
-    "image": null
+    "bio": "Dharaneesh is the visionary behind XYNEX, driven by the belief that space planning and interior design should be accessible, precise, and visual for everyone.",
+    "image": "/assets/about/founder.jpg"
   }
 ]

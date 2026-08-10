@@ -5,7 +5,7 @@
     "location": "City, State",
     "quote": "This is a placeholder review. XYNEX made it incredibly easy to visualize the layout before committing to any purchases. The 3D view is spectacular.",
     "rating": 5,
-    "avatar": "/src/assets/testimonials/customer-01.jpg"
+    "avatar": "/assets//customer-01.jpg"
   },
   {
     "id": 2,
@@ -13,7 +13,7 @@
     "location": "City, State",
     "quote": "This is a placeholder review. I loved how I could just drag and drop items and see my exact room dimensions.",
     "rating": 5,
-    "avatar": "/src/assets/testimonials/customer-02.jpg"
+    "avatar": "/assets//customer-02.jpg"
   },
   {
     "id": 3,
@@ -21,7 +21,7 @@
     "location": "City, State",
     "quote": "This is a placeholder review. The instant invoice and GST calculations saved us so much time during our office redesign.",
     "rating": 4,
-    "avatar": "/src/assets/testimonials/customer-03.png"
+    "avatar": "/assets//customer-03.png"
   },
   {
     "id": 4,
@@ -29,7 +29,7 @@
     "location": "City, State",
     "quote": "This is a placeholder review. Absolutely brilliant tool. Allowed our whole team to visualize our space instantly.",
     "rating": 5,
-    "avatar": "/src/assets/testimonials/customer-04.jpg"
+    "avatar": "/assets//customer-04.jpg"
   },
   {
     "id": 5,
@@ -37,7 +37,7 @@
     "location": "City, State",
     "quote": "This is a placeholder review. Outstanding 3D models and an extremely smooth web experience.",
     "rating": 5,
-    "avatar": "/src/assets/testimonials/customer-05.jpg"
+    "avatar": "/assets//customer-05.jpg"
   },
   {
     "id": 6,
@@ -45,6 +45,6 @@
     "location": "City, State",
     "quote": "This is a placeholder review. Getting a quote instantly rather than waiting days was a game-changer.",
     "rating": 5,
-    "avatar": "/src/assets/testimonials/customer-06.jpg"
+    "avatar": "/assets//customer-06.jpg"
   }
 ]

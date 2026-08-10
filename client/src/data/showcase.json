@@ -3,8 +3,8 @@
     "id": "room-001",
     "title": "Modern Executive Office",
     "description": "A sleek, minimalist office layout designed for maximum productivity and executive presence.",
-    "thumbnail": "/src/assets/showcase/showcase-01.jpg",
-    "image": "/src/assets/showcase/showcase-01.jpg",
+    "thumbnail": "/assets//showcase-01.jpg",
+    "image": "/assets//showcase-01.jpg",
     "products": [
       { "name": "ErgoPro Executive Chair", "qty": 1, "price": 450 },
       { "name": "Glass Desk with Chrome Legs", "qty": 1, "price": 800 },
@@ -15,8 +15,8 @@
     "id": "room-002",
     "title": "Collaborative Lounge",
     "description": "An open seating area for team discussions and casual work.",
-    "thumbnail": "/src/assets/showcase/showcase-02.jpg",
-    "image": "/src/assets/showcase/showcase-02.jpg",
+    "thumbnail": "/assets//showcase-02.jpg",
+    "image": "/assets//showcase-02.jpg",
     "products": [
       { "name": "Modular Sofa Segment", "qty": 4, "price": 250 },
       { "name": "Low Coffee Table", "qty": 1, "price": 150 },
@@ -27,8 +27,8 @@
     "id": "room-003",
     "title": "Zen Meeting Room",
     "description": "A calm, nature-inspired conference room with wood accents.",
-    "thumbnail": "/src/assets/showcase/showcase-03.jpg",
-    "image": "/src/assets/showcase/showcase-03.jpg",
+    "thumbnail": "/assets//showcase-03.jpg",
+    "image": "/assets//showcase-03.jpg",
     "products": [
       { "name": "Oak Conference Table", "qty": 1, "price": 1200 },
       { "name": "Ergonomic Mesh Chair", "qty": 8, "price": 220 },
@@ -39,8 +39,8 @@
     "id": "room-004",
     "title": "Minimalist Studio",
     "description": "A clean, functional studio apartment setup for the modern professional.",
-    "thumbnail": "/src/assets/showcase/showcase-04.jpg",
-    "image": "/src/assets/showcase/showcase-04.jpg",
+    "thumbnail": "/assets//showcase-04.jpg",
+    "image": "/assets//showcase-04.jpg",
     "products": [
       { "name": "Lounge Sofa", "qty": 1, "price": 1200 },
       { "name": "Coffee Table", "qty": 1, "price": 250 }
@@ -50,8 +50,8 @@
     "id": "room-005",
     "title": "Cozy Bedroom Retreat",
     "description": "A relaxing bedroom environment with ambient lighting and soft textures.",
-    "thumbnail": "/src/assets/showcase/showcase-05.jpg",
-    "image": "/src/assets/showcase/showcase-05.jpg",
+    "thumbnail": "/assets//showcase-05.jpg",
+    "image": "/assets//showcase-05.jpg",
     "products": [
       { "name": "Ergonomic Chair", "qty": 1, "price": 350 },
       { "name": "Floor Lamp", "qty": 1, "price": 120 }
@@ -61,8 +61,8 @@
     "id": "room-006",
     "title": "Neon Gaming Lounge",
     "description": "A vibrant, tech-inspired entertainment space with dynamic lighting.",
-    "thumbnail": "/src/assets/showcase/showcase-06.jpg",
-    "image": "/src/assets/showcase/showcase-06.jpg",
+    "thumbnail": "/assets//showcase-06.jpg",
+    "image": "/assets//showcase-06.jpg",
     "products": [
       { "name": "Abstract Wall Art", "qty": 1, "price": 180 },
       { "name": "Pendant Light", "qty": 3, "price": 80 }
