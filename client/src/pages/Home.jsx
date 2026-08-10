@@ -26,8 +26,10 @@ export default function Home() {
       {!showIntro && (
         <main className="flex-grow pt-24 pb-20 px-6 max-w-7xl mx-auto w-full">
           {/* Hero Section */}
-          <section className="min-h-[70vh] flex flex-col items-center justify-center text-center mb-24">
-            <CornerFrame className="max-w-4xl mx-auto p-12">
+          <section className="min-h-[70vh] flex flex-col items-center justify-center text-center mb-24 relative overflow-hidden rounded-3xl border border-ink/10">
+            <div className="absolute inset-0 bg-black/60 z-10"></div>
+            <img src="/src/assets/home/home-hero.png" alt="Xynex Hero" className="absolute inset-0 w-full h-full object-cover z-0" />
+            <CornerFrame className="max-w-4xl mx-auto p-12 z-20 relative">
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -72,8 +74,7 @@ export default function Home() {
               </p>
             </div>
             <div className="bg-surface-elevated rounded-lg aspect-video flex items-center justify-center border border-ink/5 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-brand-blue/10 to-brand-violet/10"></div>
-              <svg className="w-24 h-24 text-brand-blue/20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              <img src="/src/assets/home/home-how-it-works.jpg" alt="How it works blueprint" className="w-full h-full object-cover" />
             </div>
           </section>
 
@@ -138,12 +139,28 @@ export default function Home() {
                     </div>
                     <p className="text-ink-muted italic mb-6">"{r.quote}"</p>
                   </div>
-                  <div>
-                    <p className="font-medium text-sm">{r.name}</p>
-                    <p className="text-xs text-ink-muted/50 uppercase tracking-wide">{r.location}</p>
+                  <div className="flex items-center gap-4">
+                    <img src={r.avatar} alt={r.name} className="w-12 h-12 rounded-full object-cover border border-ink/10" />
+                    <div>
+                      <p className="font-medium text-sm">{r.name}</p>
+                      <p className="text-xs text-ink-muted/50 uppercase tracking-wide">{r.location}</p>
+                    </div>
                   </div>
                 </Card>
               ))}
+            </div>
+          </section>
+
+          {/* CTA Section */}
+          <section className="mb-20 relative overflow-hidden rounded-3xl border border-ink/10 flex items-center justify-center text-center p-24">
+            <div className="absolute inset-0 bg-black/60 z-10"></div>
+            <img src="/src/assets/home/home-cta-background.jpg" alt="CTA Background" className="absolute inset-0 w-full h-full object-cover z-0" />
+            <div className="z-20 relative max-w-2xl text-white">
+              <h2 className="text-4xl md:text-5xl font-display font-semibold mb-6">Ready to design your perfect space?</h2>
+              <p className="text-lg text-white/80 mb-10">Join thousands of users who have already transformed their rooms using XYNEX.</p>
+              <Button to="/universe" variant="gradient" size="lg">
+                Start Creating Now
+              </Button>
             </div>
           </section>
           

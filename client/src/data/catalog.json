@@ -4,27 +4,63 @@
     "name": "Executive Desk",
     "price": 800,
     "color": "#0057FE",
-    "dimensions": { "width": 1.8, "height": 0.75, "depth": 0.8 }
+    "dimensions": { "width": 1.8, "height": 0.75, "depth": 0.8 },
+    "thumbnail": "/src/assets/products/furniture-dining-table.png"
   },
   {
     "id": "prod-002",
     "name": "Ergonomic Chair",
     "price": 350,
     "color": "#4A11C0",
-    "dimensions": { "width": 0.6, "height": 1.1, "depth": 0.6 }
+    "dimensions": { "width": 0.6, "height": 1.1, "depth": 0.6 },
+    "thumbnail": "/src/assets/products/furniture-armchair.png"
   },
   {
     "id": "prod-003",
     "name": "Lounge Sofa",
     "price": 1200,
     "color": "#7C3AED",
-    "dimensions": { "width": 2.2, "height": 0.8, "depth": 0.9 }
+    "dimensions": { "width": 2.2, "height": 0.8, "depth": 0.9 },
+    "thumbnail": "/src/assets/products/furniture-sofa.png"
   },
   {
     "id": "prod-004",
     "name": "Coffee Table",
     "price": 250,
     "color": "#F4F5FA",
-    "dimensions": { "width": 1.0, "height": 0.45, "depth": 0.6 }
+    "dimensions": { "width": 1.0, "height": 0.45, "depth": 0.6 },
+    "thumbnail": "/src/assets/products/furniture-coffee-table.png"
+  },
+  {
+    "id": "prod-005",
+    "name": "Floor Lamp",
+    "price": 120,
+    "color": "#D1D5DB",
+    "dimensions": { "width": 0.4, "height": 1.6, "depth": 0.4 },
+    "thumbnail": "/src/assets/products/furniture-floor-lamp.png"
+  },
+  {
+    "id": "prod-006",
+    "name": "Pendant Light",
+    "price": 80,
+    "color": "#FCD34D",
+    "dimensions": { "width": 0.4, "height": 0.4, "depth": 0.4 },
+    "thumbnail": "/src/assets/products/furniture-pendant-light.png"
+  },
+  {
+    "id": "prod-007",
+    "name": "Storage Bookshelf",
+    "price": 450,
+    "color": "#9CA3AF",
+    "dimensions": { "width": 0.9, "height": 1.8, "depth": 0.3 },
+    "thumbnail": "/src/assets/products/furniture-storage-bookshelf.png"
+  },
+  {
+    "id": "prod-008",
+    "name": "Abstract Wall Art",
+    "price": 180,
+    "color": "#8B5CF6",
+    "dimensions": { "width": 0.8, "height": 1.0, "depth": 0.05 },
+    "thumbnail": "/src/assets/products/furniture-wall-art.png"
   }
 ]
