@@ -7,6 +7,7 @@ import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
 import { useCart } from '../../context/CartContext';
 import catalogData from '../../data/catalog.json';
+import FurnitureModel from '../../components/universe/FurnitureModel';
 
 function PlacedItem({ item, position, _updatePosition }) {
   // item.dimensions are width(x), height(y), depth(z)
@@ -20,15 +21,9 @@ function PlacedItem({ item, position, _updatePosition }) {
         // Optional: save new position
       }}
     >
-      <mesh position={position} castShadow receiveShadow>
-        <boxGeometry args={[item.dimensions.width, item.dimensions.height, item.dimensions.depth]} />
-        <meshStandardMaterial color={item.color} roughness={0.7} metalness={0.2} />
-        {/* Wireframe overlay for structural look */}
-        <lineSegments>
-          <edgesGeometry args={[new THREE.BoxGeometry(item.dimensions.width, item.dimensions.height, item.dimensions.depth)]} />
-          <lineBasicMaterial color="#ffffff" opacity={0.2} transparent />
-        </lineSegments>
-      </mesh>
+      <group position={position}>
+        <FurnitureModel item={item} />
+      </group>
     </PivotControls>
   );
 }
