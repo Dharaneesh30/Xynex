@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import Card from '../../components/common/Card';
 import Modal from '../../components/common/Modal';
 import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
 import showcaseData from '../../data/showcase.json';
+import MorphSlider from '../../components/animations/MorphSlider';
+import MoltenMetal from '../../components/animations/MoltenMetal';
 
 export default function Showcase() {
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -13,46 +16,29 @@ export default function Showcase() {
   };
 
   return (
-    <main className="flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full">
-      <div className="mb-12 flex justify-between items-end">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Showcase</h1>
-          <p className="text-lg text-ink-muted max-w-2xl">
-            Explore curated room designs. Discover layouts that inspire your next project.
-          </p>
-        </div>
-        <Button to="/universe/design" variant="outline" className="hidden md:flex">
-          Build Your Own
-        </Button>
+    <main className="flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full relative">
+      <MoltenMetal color1="#06070C" color2="#4A11C0" color3="#0057FE" opacity={0.6} />
+      <div className="mb-12 flex flex-col items-center text-center max-w-3xl mx-auto">
+        <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">Showcase</h1>
+        <p className="text-lg text-ink-muted mb-2">
+          Explore curated room designs. Discover layouts that inspire your next project.
+        </p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {showcaseData.map((room) => (
-          <Card 
-            key={room.id} 
-            hoverable 
-            className="cursor-pointer flex flex-col h-full"
-            onClick={() => setSelectedRoom(room)}
-          >
-            <div className="aspect-video bg-surface-elevated relative border-b border-ink/5 flex items-center justify-center overflow-hidden">
-              {room.thumbnail ? (
-                <img src={room.thumbnail} alt={room.title} className="w-full h-full object-cover" />
-              ) : (
-                <div className="text-brand-blue/20">
-                  <svg className="w-16 h-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                </div>
-              )}
-            </div>
-            <div className="p-6 flex flex-col flex-grow">
-              <h3 className="font-display font-semibold text-lg mb-2">{room.title}</h3>
-              <p className="text-sm text-ink-muted mb-4 flex-grow">{room.description}</p>
-              <div className="flex items-center justify-between border-t border-ink/5 pt-4 mt-auto">
-                <span className="text-sm text-ink-muted font-mono">{room.products.length} Items</span>
-                <span className="font-medium text-brand-blue font-mono">${calculateTotal(room.products).toLocaleString()}</span>
-              </div>
-            </div>
-          </Card>
-        ))}
+      <div className="w-full aspect-video md:aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl relative mb-16 border border-ink/10">
+        <MorphSlider 
+          items={showcaseData.map(room => ({ image: room.thumbnail, caption: room.title }))} 
+          transition="melt"
+          autoplay={true}
+          autoplayDelay={4}
+          overlayColor="#0F1119"
+        />
+      </div>
+
+      <div className="flex justify-center mb-24">
+        <Button to="/universe/design" variant="primary" size="lg" className="px-12 py-4 text-lg shadow-elevated">
+          Build Your Own
+        </Button>
       </div>
 
       <Modal 

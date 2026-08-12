@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import CornerFrame from '../components/common/CornerFrame';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import Card from '../components/common/Card';
+import NetworkConnections from '../components/animations/NetworkConnections';
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -38,16 +40,27 @@ export default function Contact() {
   };
 
   return (
-    <main className="flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full">
+    <main className="flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full relative">
+      <NetworkConnections />
       
-      <div className="text-center mb-16 max-w-3xl mx-auto">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="text-center mb-16 max-w-3xl mx-auto"
+      >
         <h1 className="text-4xl md:text-5xl font-display font-bold mb-6">Let's build your space.</h1>
         <p className="text-lg text-ink-muted">
           Whether you have questions about our Design Studio, enterprise deployments, or just want to chat about the future of interior design, we're here to listen.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="grid lg:grid-cols-2 gap-16 items-start">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+        className="grid lg:grid-cols-2 gap-16 items-start"
+      >
         
         {/* Contact Form */}
         <CornerFrame className="bg-surface p-8 md:p-12 w-full">
@@ -127,7 +140,7 @@ export default function Contact() {
           </div>
         </div>
 
-      </div>
+      </motion.div>
     </main>
   );
 }

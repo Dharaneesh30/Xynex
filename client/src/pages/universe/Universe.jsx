@@ -1,12 +1,14 @@
-import React from 'react';
 import CornerFrame from '../../components/common/CornerFrame';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
+import ScrollExpand from '../../components/animations/ScrollExpand';
+import Starfield from '../../components/animations/Starfield';
 
 export default function Universe() {
   return (
-    <main className="flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full">
-      <section className="min-h-[60vh] flex flex-col md:flex-row items-center gap-12 mb-20">
+    <main className="flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full relative">
+      <Starfield speed={1.2} />
+      <section className="min-h-[60vh] flex flex-col md:flex-row items-center gap-12 mb-20 z-10 relative">
         <div className="flex-1">
           <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">Xynex Universe</h1>
           <p className="text-xl text-ink-muted mb-8 max-w-lg leading-relaxed">
@@ -21,15 +23,7 @@ export default function Universe() {
         <div className="flex-1 w-full relative">
           <CornerFrame className="aspect-square bg-surface border border-ink/5 flex items-center justify-center p-8">
             <div className="relative w-full h-full">
-              {/* Abstract wireframe representing 3D space */}
-              <svg viewBox="0 0 100 100" className="w-full h-full text-brand-blue/30" stroke="currentColor" fill="none" strokeWidth="0.5">
-                <path d="M10,90 L40,60 L90,60 L60,90 Z" />
-                <path d="M10,90 L10,30 L40,10 L90,10 L90,60" />
-                <path d="M10,30 L40,60" />
-                <path d="M40,10 L40,60" />
-                <circle cx="65" cy="50" r="10" stroke="none" fill="currentColor" className="text-brand-violet-light/20" />
-                <rect x="25" y="70" width="15" height="15" stroke="none" fill="currentColor" className="text-brand-blue/20" />
-              </svg>
+              <img src="/assets/universe-hero.png" alt="3D Design Studio Concept" className="w-full h-full object-cover rounded-xl" />
             </div>
           </CornerFrame>
         </div>

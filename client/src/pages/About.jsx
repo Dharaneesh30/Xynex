@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from '../components/common/Card';
 import CornerFrame from '../components/common/CornerFrame';
+import FloatingLines from '../components/animations/FloatingLines';
 import team from '../data/team.json';
 
 // TODO: Replace placeholder team data in data/team.json before public launch
@@ -14,11 +15,12 @@ export default function About() {
   ];
 
   return (
-    <main className="flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full">
+    <main className="flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full relative">
+      <FloatingLines linesGradient={['#3B82F6', '#8B5CF6', '#A78BFA']} />
       
       {/* Header */}
-      <section className="mb-24 max-w-3xl">
-        <h1 className="text-4xl md:text-6xl font-display font-bold mb-6">About Us</h1>
+      <section className="mb-24 max-w-3xl mx-auto text-center flex flex-col items-center">
+        <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">Our Story</h1>
         <p className="text-xl text-ink-muted leading-relaxed">
           XYNEX was built on a simple premise: designing a space shouldn't require blind faith. 
           We bridge the gap between imagination and reality with intelligent, accessible 3D technology.
@@ -27,9 +29,9 @@ export default function About() {
 
       {/* The Story */}
       <section className="mb-32">
-        <CornerFrame className="bg-surface-elevated p-8 md:p-12">
-          <h2 className="text-2xl font-display font-semibold mb-6">Our Story</h2>
-          <div className="space-y-4 text-ink-muted leading-relaxed">
+        <CornerFrame className="bg-surface/80 backdrop-blur-2xl p-8 md:p-12 rounded-[2rem] border border-white/50 shadow-elevated text-ink">
+          <h2 className="text-3xl font-display font-bold mb-6 text-ink">Our Story</h2>
+          <div className="space-y-4 text-ink-muted leading-relaxed text-lg">
             <p>
               The traditional approach to space planning is broken. People buy furniture based on flat images and rough measurements, only to realize the proportions are entirely wrong once the items arrive.
             </p>
