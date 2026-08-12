@@ -17,13 +17,6 @@
   --font-display: "Bricolage Grotesque", sans-serif;
   --font-body: "General Sans", "Inter", sans-serif;
   --font-mono: "IBM Plex Mono", monospace;
-
-  --animate-gradient-x: gradient-x 15s ease infinite;
-  
-  @keyframes gradient-x {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
 }
 
 @layer base {
