@@ -1,0 +1,67 @@
+.masked-heading {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  contain: paint layout;
+}
+
+.masked-heading__measure {
+  position: relative;
+  display: inline-block;
+  opacity: 0; /* Keep it invisible but affecting layout */
+  pointer-events: none;
+  white-space: pre-wrap;
+}
+
+.masked-heading__word {
+  display: inline-block;
+  white-space: pre-wrap;
+}
+
+.masked-heading__baseline {
+  display: none;
+}
+
+.masked-heading__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.masked-heading__reveal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  will-change: transform, opacity, clip-path;
+}
+
+.masked-heading__clip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.masked-heading__media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.masked-heading__source {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}

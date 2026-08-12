@@ -1,0 +1,71 @@
+.scroll-expand {
+  position: relative;
+  width: 100%;
+}
+.scroll-expand--scroller {
+  overflow-y: auto;
+  height: 100vh;
+}
+.scroll-expand__track {
+  position: relative;
+  width: 100%;
+}
+.scroll-expand__stage {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.scroll-expand__frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  will-change: clip-path;
+}
+.scroll-expand__media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+.scroll-expand__scrim {
+  position: absolute;
+  inset: 0;
+  background: black;
+  opacity: 0;
+  pointer-events: none;
+}
+.scroll-expand__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.scroll-expand__title {
+  position: relative;
+  z-index: 10;
+  font-size: var(--se-title-size, 48px);
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  will-change: transform, opacity;
+}
+.scroll-expand__hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  z-index: 10;
+  opacity: 1;
+  will-change: transform, opacity;
+}

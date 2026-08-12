@@ -1,0 +1,12 @@
+.card-swap-container {
+  position: relative;
+  margin: 0 auto;
+  transform-style: preserve-3d;
+}
+
+.card-swap-container > * {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  will-change: transform, opacity;
+}

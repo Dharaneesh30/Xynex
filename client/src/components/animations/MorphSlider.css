@@ -1,0 +1,108 @@
+.morph-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+}
+
+.morph-slider-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  cursor: grab;
+  outline: none;
+  touch-action: none;
+}
+.morph-slider-stage:active {
+  cursor: grabbing;
+}
+
+.morph-slider-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.morph-slider-caption {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.morph-slider-caption-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--ms-swap) ease, transform var(--ms-swap) ease;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+}
+
+.morph-slider-caption-text.is-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.morph-slider-controls {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  z-index: 20;
+  display: flex;
+  gap: 12px;
+}
+
+.morph-slider-btn {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.morph-slider-btn:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.morph-slider-indicators {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  gap: 10px;
+}
+
+.morph-slider-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  padding: 0;
+}
+
+.morph-slider-dot.is-active {
+  background: white;
+  transform: scale(1.4);
+}
