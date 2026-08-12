@@ -58,6 +58,14 @@ const protect = async (req, res, next) => {
   }
 };
 
+const adminProtect = async (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    next();
+  } else {
+    res.status(401).json({ success: false, error: 'Not authorized as an admin' });
+  }
+};
+
 // --- AUTH ROUTES --- //
 
 app.post('/api/auth/register', async (req, res) => {
@@ -69,7 +77,7 @@ app.post('/api/auth/register', async (req, res) => {
     const user = await User.create({ name, email, password, avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random` });
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' });
     
-    res.status(201).json({ success: true, token, user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar } });
+    res.status(201).json({ success: true, token, user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar, isAdmin: user.isAdmin } });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -81,7 +89,7 @@ app.post('/api/auth/login', async (req, res) => {
     const user = await User.findOne({ email });
     if (user && (await user.matchPassword(password))) {
       const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' });
-      res.json({ success: true, token, user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar } });
+      res.json({ success: true, token, user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar, isAdmin: user.isAdmin } });
     } else {
       res.status(401).json({ success: false, error: 'Invalid email or password' });
     }
@@ -91,9 +99,53 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 app.get('/api/auth/me', protect, (req, res) => {
-  res.json({ success: true, user: { id: req.user._id, name: req.user.name, email: req.user.email, avatar: req.user.avatar } });
+  res.json({ success: true, user: { id: req.user._id, name: req.user.name, email: req.user.email, avatar: req.user.avatar, isAdmin: req.user.isAdmin } });
 });
 
+
+// --- ADMIN ROUTES --- //
+
+app.get('/api/admin/users', protect, adminProtect, async (req, res) => {
+  try {
+    const users = await User.find({}).select('-password');
+    res.json({ success: true, users });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to fetch users' });
+  }
+});
+
+app.put('/api/admin/users/:id', protect, adminProtect, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+      if (req.body.isAdmin !== undefined) {
+        user.isAdmin = req.body.isAdmin;
+      }
+      const updatedUser = await user.save();
+      res.json({ success: true, user: { id: updatedUser._id, name: updatedUser.name, email: updatedUser.email, isAdmin: updatedUser.isAdmin } });
+    } else {
+      res.status(404).json({ success: false, error: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to update user' });
+  }
+});
+
+app.delete('/api/admin/users/:id', protect, adminProtect, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      await User.deleteOne({ _id: user._id });
+      res.json({ success: true, message: 'User removed' });
+    } else {
+      res.status(404).json({ success: false, error: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to delete user' });
+  }
+});
 
 // --- ORDER ROUTES --- //
 

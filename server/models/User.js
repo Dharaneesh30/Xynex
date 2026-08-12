@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  avatar: { type: String, default: 'https://ui-avatars.com/api/?name=User&background=random' }
+  avatar: { type: String, default: 'https://ui-avatars.com/api/?name=User&background=random' },
+  isAdmin: { type: Boolean, default: false }
 }, { timestamps: true });
 
 // Hash password before saving

@@ -41,7 +41,7 @@ export default function Home() {
         <main className="flex-grow pt-24 pb-20 px-6 max-w-7xl mx-auto w-full">
           {/* Hero Section */}
           <section className="min-h-[70vh] flex flex-col items-center justify-center text-center mb-24 relative overflow-hidden rounded-3xl border border-ink/10">
-            <div className="absolute inset-0 bg-black/60 z-10"></div>
+            <div className="absolute inset-0 bg-bg-base/80 z-10"></div>
             <img src="/assets/home-hero.png" alt="Xynex Hero" className="absolute inset-0 w-full h-full object-cover z-0" />
             <CornerFrame className="max-w-4xl mx-auto p-12 z-20 relative">
               <motion.h1 
