@@ -93,25 +93,31 @@ export default function Home() {
           </section>
 
           {/* How it Works Sequence */}
-          <section className="mb-32">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-display font-semibold mb-4">How it works</h2>
-              <p className="text-ink-muted">A seamless journey from imagination to reality.</p>
-            </div>
+          <section className="mb-32 relative py-20 px-8 rounded-3xl overflow-hidden border border-brand-blue/10">
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-blue/5 via-brand-violet-light/10 to-brand-blue/5 animate-gradient-x bg-[length:200%_200%] z-0"></div>
             
-            <div className="grid md:grid-cols-4 gap-6">
-              {[
-                { step: "01", title: "Browse", desc: "Explore our catalog of real furniture and decor items." },
-                { step: "02", title: "Design in 3D", desc: "Drag and drop items into a room built to your exact dimensions." },
-                { step: "03", title: "Instant Invoice", desc: "Checkout to generate an accurate GST invoice immediately." },
-                { step: "04", title: "Track Order", desc: "Follow your items from our warehouse to your front door." }
-              ].map((s, i) => (
-                <Card key={i} className="p-6 relative group" hoverable>
-                  <div className="text-5xl font-mono font-bold text-ink/5 mb-4 group-hover:text-brand-blue/10 transition-colors">{s.step}</div>
-                  <h3 className="text-xl font-medium mb-2">{s.title}</h3>
-                  <p className="text-sm text-ink-muted">{s.desc}</p>
-                </Card>
-              ))}
+            <div className="relative z-10">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-display font-semibold mb-4">How it works</h2>
+                <p className="text-ink-muted">A seamless journey from imagination to reality.</p>
+              </div>
+              
+              <div className="grid md:grid-cols-4 gap-6">
+                {[
+                  { step: "01", title: "Browse", desc: "Explore our catalog of real furniture and decor items." },
+                  { step: "02", title: "Design in 3D", desc: "Drag and drop items into a room built to your exact dimensions." },
+                  { step: "03", title: "Instant Invoice", desc: "Checkout to generate an accurate GST invoice immediately." },
+                  { step: "04", title: "Track Order", desc: "Follow your items from our warehouse to your front door." }
+                ].map((s, i) => (
+                  <Card key={i} className="p-6 relative group bg-white/50 backdrop-blur-sm border-white/20" hoverable>
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-blue to-brand-violet flex items-center justify-center text-2xl font-mono font-bold text-white mb-6 shadow-lg shadow-brand-blue/20 group-hover:scale-110 transition-transform duration-300">
+                      {s.step}
+                    </div>
+                    <h3 className="text-xl font-medium mb-2">{s.title}</h3>
+                    <p className="text-sm text-ink-muted">{s.desc}</p>
+                  </Card>
+                ))}
+              </div>
             </div>
           </section>
 
