@@ -10,12 +10,12 @@ export default function Button({
   href,
   ...props 
 }) {
-  const baseStyles = "inline-flex items-center justify-center font-body font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-blue disabled:opacity-50 disabled:pointer-events-none rounded";
+  const baseStyles = "inline-flex items-center justify-center font-body font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-blue/50 disabled:opacity-50 disabled:pointer-events-none rounded-full";
   
   const variants = {
-    primary: "bg-brand-blue text-ink hover:bg-brand-blue/90 shadow-sm",
-    secondary: "bg-surface-elevated text-ink hover:bg-surface-elevated/80 border border-ink/10",
-    gradient: "bg-gradient-to-r from-brand-blue to-brand-violet text-ink hover:opacity-90 shadow-sm",
+    primary: "bg-ink text-white hover:bg-ink/80 shadow-md hover:shadow-lg",
+    secondary: "bg-surface-elevated backdrop-blur-md text-ink hover:bg-white/90 border border-white/50 shadow-sm",
+    gradient: "bg-gradient-to-r from-brand-blue to-brand-violet text-white hover:opacity-90 shadow-md hover:shadow-lg hover:shadow-brand-blue/20",
     outline: "border border-brand-blue text-brand-blue hover:bg-brand-blue/10",
     ghost: "text-ink-muted hover:text-ink hover:bg-surface-elevated"
   };

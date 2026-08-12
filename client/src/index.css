@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-base: #F7F5F0;
-  --color-surface: #FFFFFF;
-  --color-surface-elevated: #EDEAE2;
+  --color-bg-base: #F8FAFC;
+  --color-surface: rgba(255, 255, 255, 0.65);
+  --color-surface-elevated: rgba(255, 255, 255, 0.85);
   --color-brand-blue: #0057FE;
   --color-brand-violet: #4A11C0;
   --color-brand-violet-light: #7C3AED;
-  --color-ink: #17140F;
-  --color-ink-muted: #6E665A;
-  --color-status-good: #0F9D6E;
+  --color-ink: #0F172A;
+  --color-ink-muted: #64748B;
+  --color-status-good: #10B981;
   
-  --shadow-resting: 0 4px 6px -1px rgba(23, 20, 15, 0.08), 0 2px 4px -2px rgba(23, 20, 15, 0.08);
-  --shadow-elevated: 0 10px 15px -3px rgba(23, 20, 15, 0.14), 0 4px 6px -4px rgba(23, 20, 15, 0.14);
+  --shadow-resting: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+  --shadow-elevated: 0 10px 30px -4px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
 
   --font-display: "Bricolage Grotesque", sans-serif;
   --font-body: "General Sans", "Inter", sans-serif;
@@ -21,15 +21,15 @@
 
 @layer base {
   :root {
-    --bg-base: #F7F5F0;
-    --surface: #FFFFFF;
-    --surface-elevated: #EDEAE2;
+    --bg-base: #F8FAFC;
+    --surface: rgba(255, 255, 255, 0.65);
+    --surface-elevated: rgba(255, 255, 255, 0.85);
     --brand-blue: #0057FE;
     --brand-violet: #4A11C0;
     --brand-violet-light: #7C3AED;
-    --ink: #17140F;
-    --ink-muted: #6E665A;
-    --status-good: #0F9D6E;
+    --ink: #0F172A;
+    --ink-muted: #64748B;
+    --status-good: #10B981;
   }
 
   body {

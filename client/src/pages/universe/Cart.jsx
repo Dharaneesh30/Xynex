@@ -139,7 +139,7 @@ export default function Cart() {
       <h1 className="text-4xl md:text-5xl font-display font-bold mb-12">Your Cart</h1>
       
       {cartItems.length === 0 ? (
-        <div className="text-center py-20 bg-surface rounded-lg border border-ink/5">
+        <div className="text-center py-20 bg-surface/50 backdrop-blur-xl rounded-[2rem] border border-white/50 shadow-elevated">
           <p className="text-xl text-ink-muted mb-6">Your cart is currently empty.</p>
           <div className="flex justify-center gap-4">
             <Button to="/universe/showcase" variant="secondary">Browse Showcase</Button>

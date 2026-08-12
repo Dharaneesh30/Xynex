@@ -51,7 +51,7 @@ export default function Home() {
                 transition={{ duration: 0.8 }}
                 className="text-5xl md:text-7xl font-display font-bold tracking-wide mb-6"
               >
-                <span className="text-ink">DESIGN BEYOND </span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-ink to-ink-muted">DESIGN BEYOND </span>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-brand-violet">DIMENSIONS</span>
               </motion.h1>
               
@@ -88,8 +88,11 @@ export default function Home() {
                 Whether you're moving into a new home or redesigning an office, you can finally see exactly how things fit before making a commitment.
               </p>
             </div>
-            <div className="bg-surface-elevated rounded-lg aspect-video flex items-center justify-center border border-ink/5 relative overflow-hidden">
-              <img src="/assets/home-how-it-works.png" alt="How it works blueprint" className="w-full h-full object-cover" />
+            <div className="bg-surface/50 backdrop-blur-xl rounded-3xl aspect-video flex items-center justify-center border border-white/50 shadow-elevated relative overflow-hidden p-2">
+              <div className="w-full h-full rounded-2xl overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-tr from-brand-blue/5 to-brand-violet/5 pointer-events-none z-10 mix-blend-overlay"></div>
+                <img src="/assets/home-how-it-works.png" alt="How it works blueprint" className="w-full h-full object-cover rounded-2xl" />
+              </div>
             </div>
           </section>
 
@@ -118,14 +121,14 @@ export default function Home() {
 
           {/* Feature Highlights */}
           <section className="mb-32">
-            <CornerFrame className="bg-surface p-12">
+            <CornerFrame className="bg-surface/80 backdrop-blur-2xl p-12 border border-white/40 shadow-elevated rounded-[2rem]">
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-display font-semibold">Engineered for precision</h2>
               </div>
               <div className="grid sm:grid-cols-2 gap-8">
                 {features.map((f, i) => (
-                  <div key={i} className="flex gap-4">
-                    <div className="mt-1">
+                  <div key={i} className="flex gap-4 group">
+                    <div className="mt-1 transition-transform group-hover:scale-110 group-hover:text-brand-blue duration-300">
                       <svg className="w-6 h-6 text-brand-violet-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </div>
                     <div>
@@ -166,12 +169,12 @@ export default function Home() {
           </section>
 
           {/* CTA Section */}
-          <section className="mb-20 relative overflow-hidden rounded-3xl border border-ink/10 flex items-center justify-center text-center p-24">
-            <div className="absolute inset-0 bg-black/60 z-10"></div>
-            <img src="/assets/home-cta-background.png" alt="CTA Background" className="absolute inset-0 w-full h-full object-cover z-0" />
-            <div className="z-20 relative max-w-2xl text-white">
-              <h2 className="text-4xl md:text-5xl font-display font-semibold mb-6">Ready to design your perfect space?</h2>
-              <p className="text-lg text-white/80 mb-10">Join thousands of users who have already transformed their rooms using XYNEX.</p>
+          <section className="mb-20 relative overflow-hidden rounded-[2rem] border border-white/50 shadow-elevated flex items-center justify-center text-center p-24 bg-surface/60 backdrop-blur-2xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-blue/10 to-brand-violet/10 z-10 pointer-events-none"></div>
+            <img src="/assets/home-cta-background.png" alt="CTA Background" className="absolute inset-0 w-full h-full object-cover z-0 opacity-20 mix-blend-overlay" />
+            <div className="z-20 relative max-w-2xl text-ink">
+              <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-brand-violet">Ready to design your perfect space?</h2>
+              <p className="text-lg text-ink-muted mb-10">Join thousands of users who have already transformed their rooms using XYNEX.</p>
               <Button to="/universe" variant="gradient" size="lg">
                 Start Creating Now
               </Button>

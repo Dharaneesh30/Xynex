@@ -167,7 +167,7 @@ function CameraRig({ phase }) {
   return null;
 }
 
-export default function ButterflyIntro({ onComplete }) {
+function ButterflyIntro({ onComplete }) {
   const prefersReducedMotion = useReducedMotion();
   const [phase, setPhase] = useState('scatter'); // 'scatter' -> 'converge' -> 'text' -> 'dissolve'
 
@@ -261,5 +261,48 @@ export default function ButterflyIntro({ onComplete }) {
 
       </motion.div>
     </AnimatePresence>
+  );
+}
+
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("WebGL crashed in ButterflyIntro:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // Fallback gracefully without Canvas
+      return (
+        <motion.div 
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1 }}
+          className="fixed inset-0 z-50 bg-[#06070C] flex items-center justify-center overflow-hidden"
+        >
+          <div className="relative w-full max-w-2xl aspect-square md:aspect-video flex items-center justify-center pointer-events-none drop-shadow-[0_0_40px_rgba(74,17,192,0.6)]">
+            <img src={logoUrl} alt="XYNEX Logo" className="w-[200px] h-[200px] md:w-[300px] md:h-[300px]" />
+          </div>
+        </motion.div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+export default function ButterflyIntroWithErrorBoundary(props) {
+  return (
+    <ErrorBoundary>
+      <ButterflyIntro {...props} />
+    </ErrorBoundary>
   );
 }

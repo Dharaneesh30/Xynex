@@ -23,19 +23,12 @@ app.use(express.json({ limit: '50mb' }));
 // Database Connection
 const connectDB = async () => {
   try {
-    if (process.env.MONGO_URI) {
-      await mongoose.connect(process.env.MONGO_URI);
-      console.log('Connected to MongoDB via MONGO_URI');
-    } else {
-      console.log('No MONGO_URI provided. Starting in-memory MongoDB for zero-setup demo...');
-      const mongoServer = await MongoMemoryServer.create();
-      const mongoUri = mongoServer.getUri();
-      await mongoose.connect(mongoUri);
-      console.log(`Connected to In-Memory MongoDB at ${mongoUri}`);
-    }
+    const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/xynex_dev';
+    await mongoose.connect(mongoUri);
+    console.log(`Connected to MongoDB at ${mongoUri}`);
   } catch (error) {
-    console.error('MongoDB connection error:', error);
-    process.exit(1);
+    console.error('MongoDB connection error. Please ensure MongoDB is running locally, or provide a MONGO_URI in .env:', error.message);
+    // Don't exit process so server stays alive to serve error messages to frontend
   }
 };
 connectDB();
