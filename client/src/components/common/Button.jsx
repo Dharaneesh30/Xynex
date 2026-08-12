@@ -10,7 +10,7 @@ export default function Button({
   href,
   ...props 
 }) {
-  const baseStyles = "inline-flex items-center justify-center font-body font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-blue/50 disabled:opacity-50 disabled:pointer-events-none rounded";
+  const baseStyles = "inline-flex items-center justify-center font-body font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-blue disabled:opacity-50 disabled:pointer-events-none rounded";
   
   const variants = {
     primary: "bg-brand-blue text-ink hover:bg-brand-blue/90 shadow-sm",

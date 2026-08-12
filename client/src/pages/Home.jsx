@@ -42,7 +42,7 @@ export default function Home() {
           {/* Hero Section */}
           <section className="min-h-[70vh] flex flex-col items-center justify-center text-center mb-24 relative overflow-hidden rounded-3xl border border-ink/10">
             <div className="absolute inset-0 bg-black/60 z-10"></div>
-            <img src="/assets//home-hero.png" alt="Xynex Hero" className="absolute inset-0 w-full h-full object-cover z-0" />
+            <img src="/assets/home-hero.png" alt="Xynex Hero" className="absolute inset-0 w-full h-full object-cover z-0" />
             <CornerFrame className="max-w-4xl mx-auto p-12 z-20 relative">
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }}
@@ -88,7 +88,7 @@ export default function Home() {
               </p>
             </div>
             <div className="bg-surface-elevated rounded-lg aspect-video flex items-center justify-center border border-ink/5 relative overflow-hidden">
-              <img src="/assets//home-how-it-works.jpg" alt="How it works blueprint" className="w-full h-full object-cover" />
+              <img src="/assets/home-how-it-works.png" alt="How it works blueprint" className="w-full h-full object-cover" />
             </div>
           </section>
 
@@ -167,7 +167,7 @@ export default function Home() {
           {/* CTA Section */}
           <section className="mb-20 relative overflow-hidden rounded-3xl border border-ink/10 flex items-center justify-center text-center p-24">
             <div className="absolute inset-0 bg-black/60 z-10"></div>
-            <img src="/assets//home-cta-background.jpg" alt="CTA Background" className="absolute inset-0 w-full h-full object-cover z-0" />
+            <img src="/assets/home-cta-background.png" alt="CTA Background" className="absolute inset-0 w-full h-full object-cover z-0" />
             <div className="z-20 relative max-w-2xl text-white">
               <h2 className="text-4xl md:text-5xl font-display font-semibold mb-6">Ready to design your perfect space?</h2>
               <p className="text-lg text-white/80 mb-10">Join thousands of users who have already transformed their rooms using XYNEX.</p>

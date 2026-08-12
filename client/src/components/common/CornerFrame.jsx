@@ -3,7 +3,7 @@ import React from 'react';
 export default function CornerFrame({ children, className = "" }) {
   const Corner = ({ className }) => (
     <svg 
-      className={`absolute w-4 h-4 text-brand-blue/50 ${className}`} 
+      className={`absolute w-4 h-4 text-ink-muted group-hover:text-brand-blue group-active:text-brand-violet transition-colors duration-300 ${className}`} 
       viewBox="0 0 16 16" 
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

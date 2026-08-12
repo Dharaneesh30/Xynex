@@ -184,7 +184,7 @@ export default function Design() {
       </div>
 
       {/* Center Panel: 3D Canvas */}
-      <div className="flex-grow relative bg-void overflow-hidden">
+      <div className="flex-grow flex relative bg-bg-base overflow-hidden">
         <Canvas shadows camera={{ position: [5, 5, 5], fov: 50 }} gl={{ preserveDrawingBuffer: true }} ref={canvasRef}>
           <color attach="background" args={['#06070C']} />
           <ambientLight intensity={0.5} />

@@ -169,7 +169,7 @@ function CameraRig({ phase }) {
 
 export default function ButterflyIntro({ onComplete }) {
   const prefersReducedMotion = useReducedMotion();
-  const [phase, setPhase] = useState('scatter'); // 'scatter' -> 'converge' -> 'text'
+  const [phase, setPhase] = useState('scatter'); // 'scatter' -> 'converge' -> 'text' -> 'dissolve'
 
   useEffect(() => {
     if (prefersReducedMotion) {
@@ -180,11 +180,13 @@ export default function ButterflyIntro({ onComplete }) {
 
     const scatterTimer = setTimeout(() => setPhase('converge'), 2500);
     const textTimer = setTimeout(() => setPhase('text'), 5000);
-    const completeTimer = setTimeout(onComplete, 7500);
+    const dissolveTimer = setTimeout(() => setPhase('dissolve'), 7000);
+    const completeTimer = setTimeout(onComplete, 8500);
 
     return () => {
       clearTimeout(scatterTimer);
       clearTimeout(textTimer);
+      clearTimeout(dissolveTimer);
       clearTimeout(completeTimer);
     };
   }, [prefersReducedMotion, onComplete]);
@@ -215,6 +217,14 @@ export default function ButterflyIntro({ onComplete }) {
             </Canvas>
           </div>
         )}
+
+        {/* Soft light wash dissolve effect */}
+        <motion.div 
+          className="absolute inset-0 pointer-events-none z-40 bg-bg-base"
+          initial={{ opacity: 0, clipPath: 'circle(0% at 50% 50%)' }}
+          animate={phase === 'dissolve' ? { opacity: 1, clipPath: 'circle(150% at 50% 50%)' } : { opacity: 0, clipPath: 'circle(0% at 50% 50%)' }}
+          transition={{ duration: 1.5, ease: 'easeInOut' }}
+        />
 
         {/* 2D Overlay (Logo + Text) */}
         <div className="relative w-full max-w-2xl aspect-square md:aspect-video flex items-center justify-center pointer-events-none">

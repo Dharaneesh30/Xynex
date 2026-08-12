@@ -29,7 +29,7 @@ export default function Navbar() {
   return (
     <nav 
       className={`fixed top-0 inset-x-0 z-40 transition-all duration-300 ${
-        scrolled ? 'bg-void/80 backdrop-blur-md border-b border-ink/5 py-4' : 'bg-transparent py-6'
+        scrolled ? 'bg-bg-base/80 backdrop-blur-md border-b border-ink/5 py-4' : 'bg-transparent py-6'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">

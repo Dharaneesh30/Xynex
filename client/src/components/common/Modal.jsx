@@ -31,7 +31,7 @@ export default function Modal({ isOpen, onClose, title, children, className = ""
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-void/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-bg-base/80 backdrop-blur-sm"
             onClick={onClose}
           />
           <motion.div
@@ -39,7 +39,7 @@ export default function Modal({ isOpen, onClose, title, children, className = ""
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className={`relative w-full max-w-2xl bg-surface-elevated border border-ink/10 rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh] ${className}`}
+            className={`relative w-full max-w-2xl bg-surface-elevated border border-ink/10 rounded-lg shadow-elevated overflow-hidden flex flex-col max-h-[90vh] ${className}`}
           >
             {title && (
               <div className="px-6 py-4 border-b border-ink/10 flex items-center justify-between">

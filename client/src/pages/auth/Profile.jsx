@@ -62,7 +62,7 @@ export default function Profile() {
           {orders.map(order => (
             <Card key={order._id} className="overflow-hidden flex flex-col">
               {order.designSnapshot ? (
-                <div className="w-full h-48 bg-void border-b border-ink/5 relative group">
+                <div className="w-full h-48 bg-bg-base border-b border-ink/5 relative group">
                   <img src={order.designSnapshot} alt="Room Design Snapshot" className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                     <span className="text-white font-medium text-sm">Room Design</span>

@@ -1,15 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-void: #06070C;
-  --color-surface: #0F1119;
-  --color-surface-elevated: #171A26;
+  --color-bg-base: #F7F5F0;
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #EDEAE2;
   --color-brand-blue: #0057FE;
   --color-brand-violet: #4A11C0;
   --color-brand-violet-light: #7C3AED;
-  --color-ink: #F4F5FA;
-  --color-ink-muted: #8A8FA3;
-  --color-status-good: #34D399;
+  --color-ink: #17140F;
+  --color-ink-muted: #6E665A;
+  --color-status-good: #0F9D6E;
+  
+  --shadow-resting: 0 4px 6px -1px rgba(23, 20, 15, 0.08), 0 2px 4px -2px rgba(23, 20, 15, 0.08);
+  --shadow-elevated: 0 10px 15px -3px rgba(23, 20, 15, 0.14), 0 4px 6px -4px rgba(23, 20, 15, 0.14);
 
   --font-display: "Bricolage Grotesque", sans-serif;
   --font-body: "General Sans", "Inter", sans-serif;
@@ -18,19 +21,19 @@
 
 @layer base {
   :root {
-    --void: #06070C;
-    --surface: #0F1119;
-    --surface-elevated: #171A26;
+    --bg-base: #F7F5F0;
+    --surface: #FFFFFF;
+    --surface-elevated: #EDEAE2;
     --brand-blue: #0057FE;
     --brand-violet: #4A11C0;
     --brand-violet-light: #7C3AED;
-    --ink: #F4F5FA;
-    --ink-muted: #8A8FA3;
-    --status-good: #34D399;
+    --ink: #17140F;
+    --ink-muted: #6E665A;
+    --status-good: #0F9D6E;
   }
 
   body {
-    background-color: var(--color-void);
+    background-color: var(--color-bg-base);
     color: var(--color-ink);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
