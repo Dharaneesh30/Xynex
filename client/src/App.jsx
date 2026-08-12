@@ -11,6 +11,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Universe from './pages/universe/Universe';
+import Build from './pages/universe/Build';
 import Showcase from './pages/universe/Showcase';
 import Design from './pages/universe/Design';
 import Cart from './pages/universe/Cart';
@@ -50,6 +51,7 @@ function AppRoutes() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/universe" element={<Universe />} />
+          <Route path="/universe/build" element={<Build />} />
           <Route path="/universe/showcase" element={<Showcase />} />
           <Route path="/universe/design" element={<Design />} />
           <Route path="/universe/cart" element={<Cart />} />

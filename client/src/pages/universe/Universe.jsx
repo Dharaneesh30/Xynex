@@ -1,55 +1,71 @@
-import CornerFrame from '../../components/common/CornerFrame';
+import React from 'react';
+import { motion } from 'framer-motion';
 import Button from '../../components/common/Button';
-import Card from '../../components/common/Card';
-import ScrollExpand from '../../components/animations/ScrollExpand';
 import Starfield from '../../components/animations/Starfield';
+import SpotlightCard from '../../components/animations/SpotlightCard';
+import BlurReveal from '../../components/animations/BlurReveal';
 
 export default function Universe() {
   return (
-    <main className="flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full relative">
-      <Starfield speed={1.2} />
-      <section className="min-h-[60vh] flex flex-col md:flex-row items-center gap-12 mb-20 z-10 relative">
-        <div className="flex-1">
-          <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">Xynex Universe</h1>
-          <p className="text-xl text-ink-muted mb-8 max-w-lg leading-relaxed">
-            Your centralized hub for space planning. Explore curated designs for inspiration or launch the Design Studio to build from scratch.
-          </p>
-          <div className="flex gap-4">
-            <Button to="/universe/design" variant="primary" size="lg">Open Design Studio</Button>
-            <Button to="/universe/showcase" variant="secondary" size="lg">View Showcase</Button>
-          </div>
-        </div>
+    <main className="flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full relative z-10 min-h-[90vh] flex flex-col justify-center">
+      <div className="fixed inset-0 z-[-1] bg-[#030305]">
+        <Starfield speed={0.8} color="#E0E7FF" className="opacity-80" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(124,58,237,0.05),transparent_70%)] pointer-events-none" />
+      </div>
+      
+      <BlurReveal className="text-center mb-16">
+        <p className="text-xs font-semibold tracking-[0.2em] text-[#A78BFA] mb-4 uppercase">
+          Welcome to the
+        </p>
+        <h1 className="text-5xl md:text-7xl font-display font-medium mb-6 text-[#F8FAFC] tracking-tight">
+          Xynex Universe.
+        </h1>
+        <p className="text-lg md:text-xl text-[#CBD5E1] max-w-2xl mx-auto">
+          Choose your path. Will you shape a new reality or explore what has already been imagined?
+        </p>
+      </BlurReveal>
 
-        <div className="flex-1 w-full relative">
-          <CornerFrame className="aspect-square bg-surface border border-ink/5 flex items-center justify-center p-8">
-            <div className="relative w-full h-full">
-              <img src="/assets/universe-hero.png" alt="3D Design Studio Concept" className="w-full h-full object-cover rounded-xl" />
+      <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto w-full">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+          className="h-full"
+        >
+          <SpotlightCard className="h-full rounded-3xl border border-[#272333] bg-[rgba(13,13,20,0.6)] backdrop-blur-xl hover:border-[#7C3AED] transition-all duration-500 flex flex-col group p-10 md:p-12 text-center items-center justify-center min-h-[400px]">
+            <div className="w-16 h-16 rounded-full bg-[rgba(124,58,237,0.1)] border border-[#7C3AED] flex items-center justify-center mb-8 text-[#A78BFA] group-hover:scale-110 transition-transform duration-500">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
             </div>
-          </CornerFrame>
-        </div>
-      </section>
+            <h2 className="text-3xl font-display font-bold mb-4 text-[#F8FAFC]">Build Your Dimension</h2>
+            <p className="text-[#CBD5E1] leading-relaxed mb-10 max-w-sm">
+              Enter the creative studio. Shape rooms, hubs, and environments that exist beyond physical boundaries.
+            </p>
+            <Button to="/universe/build" variant="primary" className="!bg-[#7C3AED] hover:!bg-[#8B5CF6] !text-[#FFFFFF] !border-none px-8 py-3 rounded-lg font-semibold w-full sm:w-auto">
+              Enter Studio
+            </Button>
+          </SpotlightCard>
+        </motion.div>
 
-      <section className="grid md:grid-cols-2 gap-8">
-        <Card hoverable className="p-8 group cursor-pointer" onClick={() => window.location.href='/universe/showcase'}>
-          <div className="w-12 h-12 rounded-full bg-brand-violet/10 text-brand-violet-light flex items-center justify-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-          </div>
-          <h3 className="text-2xl font-display font-semibold mb-3 group-hover:text-brand-blue transition-colors">Showcase</h3>
-          <p className="text-ink-muted">
-            Browse our gallery of curated interior designs. Discover layouts that maximize productivity and aesthetics, and see exactly which products were used to achieve the look.
-          </p>
-        </Card>
-
-        <Card hoverable className="p-8 group cursor-pointer" onClick={() => window.location.href='/universe/design'}>
-          <div className="w-12 h-12 rounded-full bg-brand-blue/10 text-brand-blue flex items-center justify-center mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-          </div>
-          <h3 className="text-2xl font-display font-semibold mb-3 group-hover:text-brand-violet transition-colors">Design Studio</h3>
-          <p className="text-ink-muted">
-            Launch our advanced 3D designer. Input your room dimensions, drag and drop furniture from our live catalog, and generate an instant layout and cost estimate.
-          </p>
-        </Card>
-      </section>
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+          className="h-full"
+        >
+          <SpotlightCard className="h-full rounded-3xl border border-[#272333] bg-[rgba(13,13,20,0.6)] backdrop-blur-xl hover:border-[#06B6D4] transition-all duration-500 flex flex-col group p-10 md:p-12 text-center items-center justify-center min-h-[400px]">
+            <div className="w-16 h-16 rounded-full bg-[rgba(6,182,212,0.1)] border border-[#06B6D4] flex items-center justify-center mb-8 text-[#22D3EE] group-hover:scale-110 transition-transform duration-500">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+            </div>
+            <h2 className="text-3xl font-display font-bold mb-4 text-[#F8FAFC]">Explore Others</h2>
+            <p className="text-[#CBD5E1] leading-relaxed mb-10 max-w-sm">
+              Discover spaces, ideas, and experiences created by the community. See what imagination looks like.
+            </p>
+            <Button to="/universe/showcase" variant="outline" className="!border-[#272333] group-hover:!border-[#06B6D4] text-[#CBD5E1] hover:text-[#F8FAFC] px-8 py-3 rounded-lg font-semibold w-full sm:w-auto transition-all">
+              Explore Designs
+            </Button>
+          </SpotlightCard>
+        </motion.div>
+      </div>
     </main>
   );
 }

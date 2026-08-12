@@ -17,7 +17,7 @@ function PlacedItem({ item, position, isSelected, onSelect }) {
       anchor={[0, -1, 0]} // Anchor at bottom center
       depthTest={false}
       lineWidth={2}
-      axisColors={['#0057FE', '#4A11C0', '#34D399']}
+      axisColors={['#06B6D4', '#7C3AED', '#34D399']}
       visible={isSelected}
     >
       <group position={position} onPointerDown={(e) => { e.stopPropagation(); onSelect(); }}>
@@ -86,7 +86,13 @@ export default function Design() {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [activeCategory, setActiveCategory] = useState('All');
   const [isQueryModalOpen, setIsQueryModalOpen] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
   const canvasRef = useRef();
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setIsInitializing(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const categories = ['All', ...new Set(catalogData.map(item => item.category))];
   const filteredCatalog = activeCategory === 'All' ? catalogData : catalogData.filter(item => item.category === activeCategory);
@@ -149,11 +155,20 @@ export default function Design() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen pt-[72px]">
+    <div className="flex flex-col md:flex-row h-screen pt-[72px] relative bg-[#020204]">
       
+      {/* Initialization Loader */}
+      {isInitializing && (
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#050507]">
+          <div className="w-16 h-16 border-4 border-[#272333] border-t-[#7C3AED] rounded-full animate-spin mb-8"></div>
+          <h2 className="text-2xl font-display font-medium text-[#F8FAFC] tracking-widest mb-2 uppercase">Initializing Xynex Studio</h2>
+          <p className="text-[#06B6D4] font-mono text-sm uppercase tracking-widest animate-pulse">Calibrating dimensions...</p>
+        </div>
+      )}
+
       {/* Left Panel: Settings */}
-      <div className="w-full md:w-64 bg-surface border-r border-ink/5 p-6 overflow-y-auto flex-shrink-0 flex flex-col z-10">
-        <h2 className="font-display font-semibold text-lg mb-6 text-ink">Room Setup</h2>
+      <div className="w-full md:w-64 bg-[#080A0F] border-r border-[#1E293B] p-6 overflow-y-auto flex-shrink-0 flex flex-col z-10">
+        <h2 className="font-display font-semibold text-lg mb-6 text-[#FFFFFF]">Room Setup</h2>
         
         <div className="space-y-4 mb-8">
           <Input 
@@ -172,18 +187,17 @@ export default function Design() {
           />
         </div>
 
-        <div className="mt-auto border-t border-ink/10 pt-6">
+        <div className="mt-auto border-t border-[#1E293B] pt-6">
           <div className="flex justify-between mb-2">
-            <span className="text-sm text-ink-muted">Items Placed</span>
-            <span className="font-mono">{placedItems.length}</span>
+            <span className="text-sm text-[#A1A1AA]">Items Placed</span>
+            <span className="font-mono text-[#F8FAFC]">{placedItems.length}</span>
           </div>
           <div className="flex justify-between mb-4">
-            <span className="text-sm text-ink-muted">Est. Cost</span>
-            <span className="font-mono text-brand-blue font-medium">${calculateTotal().toLocaleString()}</span>
+            <span className="text-sm text-[#A1A1AA]">Est. Cost</span>
+            <span className="font-mono text-[#22D3EE] font-medium">${calculateTotal().toLocaleString()}</span>
           </div>
           <Button 
-            className="w-full mb-3" 
-            variant="primary"
+            className="w-full mb-3 !bg-[#7C3AED] hover:!bg-[#8B5CF6] !text-[#FFFFFF] !border-none transition-colors" 
             onClick={() => {
               captureSnapshot();
               placedItems.forEach(item => addToCart(item));
@@ -191,14 +205,14 @@ export default function Design() {
             }}
             disabled={placedItems.length === 0}
           >
-            Add Layout to Cart
+            Save Blueprint
           </Button>
           <Button 
-            className="w-full" 
+            className="w-full !border-[#272333] hover:!border-[#7C3AED] hover:!text-[#F8FAFC] text-[#CBD5E1] transition-colors" 
             variant="outline"
             onClick={() => setIsQueryModalOpen(true)}
           >
-            Ask about Design
+            Submit for Review
           </Button>
         </div>
       </div>
@@ -212,7 +226,7 @@ export default function Design() {
           ref={canvasRef}
           onPointerMissed={() => setSelectedItemId(null)}
         >
-          <color attach="background" args={['#020202']} />
+          <color attach="background" args={['#020204']} />
           <ambientLight intensity={0.2} />
           
           {/* Key Light (warm studio) */}
@@ -246,18 +260,25 @@ export default function Design() {
 
         {/* UI Overlay on Canvas */}
         <div className="absolute top-4 left-4 right-4 flex justify-between pointer-events-none">
-          <div className="bg-void/80 backdrop-blur px-3 py-1.5 rounded border border-ink/10 font-mono text-xs text-ink-muted pointer-events-auto">
+          <div className="bg-[#020204]/80 backdrop-blur px-3 py-1.5 rounded border border-[#272333] font-mono text-xs text-[#06B6D4] pointer-events-auto">
             Design Studio — Live Mode
           </div>
-          <Button variant="ghost" size="sm" className="pointer-events-auto" onClick={() => setPlacedItems([])}>
+          <Button variant="ghost" size="sm" className="pointer-events-auto text-[#A1A1AA] hover:text-[#F8FAFC]" onClick={() => setPlacedItems([])}>
             Clear Room
           </Button>
         </div>
+        
+        {/* Empty State */}
+        {placedItems.length === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <p className="text-[#A1A1AA] font-mono text-sm tracking-widest uppercase bg-[#050507]/50 px-4 py-2 rounded">Space is empty. Begin by adding dimensions.</p>
+          </div>
+        )}
       </div>
 
       {/* Right Panel: Catalog */}
-      <div className="w-full md:w-80 bg-surface border-l border-ink/5 p-6 overflow-y-auto flex-shrink-0 z-10 flex flex-col">
-        <h2 className="font-display font-semibold text-lg mb-4 text-ink">Catalog</h2>
+      <div className="w-full md:w-80 bg-[#080A0F] border-l border-[#1E293B] p-6 overflow-y-auto flex-shrink-0 z-10 flex flex-col">
+        <h2 className="font-display font-semibold text-lg mb-4 text-[#FFFFFF]">Catalog</h2>
         
         {/* Category Tabs */}
         <div className="flex flex-wrap gap-2 mb-6">
@@ -267,8 +288,8 @@ export default function Design() {
               onClick={() => setActiveCategory(cat)}
               className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
                 activeCategory === cat 
-                  ? 'bg-brand-blue text-white' 
-                  : 'bg-ink/5 text-ink hover:bg-ink/10'
+                  ? 'bg-[#06B6D4] text-[#FFFFFF]' 
+                  : 'bg-[#1E293B] text-[#A1A1AA] hover:bg-[#272333] hover:text-[#F8FAFC]'
               }`}
             >
               {cat}
@@ -280,12 +301,12 @@ export default function Design() {
           {filteredCatalog.map(product => (
             <Card key={product.id} className="p-4 flex flex-col group">
               <div className="flex justify-between items-start mb-2">
-                <h4 className="font-medium text-sm">{product.name}</h4>
-                <span className="font-mono text-sm text-brand-blue">${product.price}</span>
+                <h4 className="font-medium text-sm text-[#F8FAFC]">{product.name}</h4>
+                <span className="font-mono text-sm text-[#22D3EE]">${product.price}</span>
               </div>
               <div className="flex gap-2 items-center mb-4">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: product.color }}></div>
-                <span className="text-xs text-ink-muted">
+                <div className="w-3 h-3 rounded-full border border-[#272333]" style={{ backgroundColor: product.color }}></div>
+                <span className="text-xs text-[#A1A1AA]">
                   {product.dimensions.width}m x {product.dimensions.depth}m x {product.dimensions.height}m
                 </span>
               </div>
@@ -324,11 +345,11 @@ export default function Design() {
           <Input label="Email" name="email" type="email" required />
           <div>
             <label className="block text-sm font-medium mb-1">Your Question</label>
-            <textarea name="message" className="w-full bg-surface border border-ink/10 rounded px-3 py-2 text-sm focus:outline-none focus:border-brand-blue/50 focus:ring-1 focus:ring-brand-blue/50" rows="4" required></textarea>
+            <textarea name="message" className="w-full bg-[#0B0C11] border border-[#272A35] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#06B6D4] focus:shadow-[0_0_10px_rgba(6,182,212,0.2)] text-[#F8FAFC]" rows="4" required></textarea>
           </div>
           <div className="pt-4 flex justify-end gap-4">
             <Button type="button" variant="ghost" onClick={() => setIsQueryModalOpen(false)}>Cancel</Button>
-            <Button type="submit" variant="primary">Send Query</Button>
+            <Button type="submit" variant="cyan">Send Query</Button>
           </div>
         </form>
       </Modal>

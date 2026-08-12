@@ -160,35 +160,48 @@ app.post('/api/orders', protect, async (req, res) => {
     });
 
     // 2. Email logic (simplified for space)
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.ethereal.email',
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: Number(process.env.SMTP_PORT) === 465,
-      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-    });
+    try {
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || 'smtp.ethereal.email',
+        port: Number(process.env.SMTP_PORT) || 587,
+        secure: Number(process.env.SMTP_PORT) === 465,
+        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+      });
 
-    const deliveryDate = new Date();
-    deliveryDate.setDate(deliveryDate.getDate() + 7);
-    const formattedDate = deliveryDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      const deliveryDate = new Date();
+      deliveryDate.setDate(deliveryDate.getDate() + 7);
+      const formattedDate = deliveryDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-    let attachments = [];
-    let imageCid = '';
-    if (designImage) {
-      const base64Data = designImage.replace(/^data:image\/jpeg;base64,/, "");
-      attachments.push({ filename: 'room-design.jpg', content: Buffer.from(base64Data, 'base64'), cid: 'designsnapshot' });
-      imageCid = '<p>Your Design:</p><img src="cid:designsnapshot" style="max-width:100%; border-radius:8px;"/>';
+      let attachments = [];
+      let imageCid = '';
+      if (designImage) {
+        const base64Data = designImage.replace(/^data:image\/jpeg;base64,/, "");
+        attachments.push({ filename: 'room-design.jpg', content: Buffer.from(base64Data, 'base64'), cid: 'designsnapshot' });
+        imageCid = '<p>Your Design:</p><img src="cid:designsnapshot" style="max-width:100%; border-radius:8px;"/>';
+      }
+
+      const itemsHtml = items.map(i => `<tr><td>${i.name}</td><td>${i.qty}</td><td>$${(i.price * i.qty).toLocaleString()}</td></tr>`).join('');
+      
+      // Customer email
+      await transporter.sendMail({
+        from: `"XYNEX Orders" <${process.env.SMTP_USER || 'orders@xynex.com'}>`,
+        to: req.user.email,
+        subject: `Your XYNEX Order Invoice - Expected ${formattedDate}`,
+        html: `<h2>Thank you for your order, ${req.user.name}!</h2><p>Address: ${address}</p><table border="1" cellpadding="10" style="border-collapse: collapse;"><tr><th>Item</th><th>Qty</th><th>Total</th></tr>${itemsHtml}<tr><td colspan="2"><strong>Total Paid</strong></td><td><strong>$${total.toLocaleString()}</strong></td></tr></table>${imageCid}`,
+        attachments
+      });
+
+      // Admin email
+      await transporter.sendMail({
+        from: `"XYNEX Orders" <${process.env.SMTP_USER || 'orders@xynex.com'}>`,
+        to: process.env.SMTP_FROM || 'dharaneesh0530@gmail.com',
+        subject: `New Order from ${req.user.name}`,
+        html: `<h2>New Order Received!</h2><p><strong>Customer:</strong> ${req.user.name} (${req.user.email})</p><p><strong>Address:</strong> ${address}</p><table border="1" cellpadding="10" style="border-collapse: collapse;"><tr><th>Item</th><th>Qty</th><th>Total</th></tr>${itemsHtml}<tr><td colspan="2"><strong>Total Paid</strong></td><td><strong>$${total.toLocaleString()}</strong></td></tr></table>${imageCid}`,
+        attachments
+      });
+    } catch (emailError) {
+      console.error('Email error:', emailError);
     }
-
-    const itemsHtml = items.map(i => `<tr><td>${i.name}</td><td>${i.qty}</td><td>$${(i.price * i.qty).toLocaleString()}</td></tr>`).join('');
-    
-    // Customer email
-    transporter.sendMail({
-      from: `"XYNEX Orders" <${process.env.SMTP_USER || 'orders@xynex.com'}>`,
-      to: req.user.email,
-      subject: `Your XYNEX Order Invoice - Expected ${formattedDate}`,
-      html: `<h2>Thank you for your order, ${req.user.name}!</h2><p>Address: ${address}</p><table border="1" cellpadding="10" style="border-collapse: collapse;"><tr><th>Item</th><th>Qty</th><th>Total</th></tr>${itemsHtml}<tr><td colspan="2"><strong>Total Paid</strong></td><td><strong>$${total.toLocaleString()}</strong></td></tr></table>${imageCid}`,
-      attachments
-    }).catch(e => console.error('Email error:', e));
 
     res.status(201).json({ success: true, order });
   } catch (error) {
