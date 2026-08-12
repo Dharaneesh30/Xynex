@@ -50,9 +50,9 @@ export default function Starfield({
       const starColor = baseColor.clone();
       const randColor = Math.random();
       if (randColor > 0.8) {
-        starColor.setHex(0x3B82F6); // Brand blue
+        starColor.setHex(0x22D3EE); // Brand cyan
       } else if (randColor > 0.9) {
-        starColor.setHex(0x8B5CF6); // Brand violet
+        starColor.setHex(0xA78BFA); // Brand violet
       }
       colors.push(starColor.r, starColor.g, starColor.b);
     }

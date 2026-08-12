@@ -10,7 +10,7 @@ const Input = forwardRef(({ className = "", label, error, ...props }, ref) => {
       )}
       <input
         ref={ref}
-        className={`w-full bg-surface-elevated border ${error ? 'border-red-500' : 'border-ink/10 focus:border-brand-blue'} rounded px-4 py-2 text-ink placeholder-ink-muted/50 focus:outline-none focus:ring-1 focus:ring-brand-blue transition-colors ${className}`}
+        className={`w-full bg-[#0B0C11] border ${error ? 'border-[#F87171]' : 'border-[#272A35] hover:border-[#3F3F52] focus:border-[#7C3AED]'} rounded px-4 py-2 text-[#F8FAFC] placeholder-[#64748B] focus:outline-none focus:ring-1 focus:ring-[#7C3AED] focus:shadow-[0_0_10px_rgba(124,58,237,0.20)] transition-all ${className}`}
         {...props}
       />
       {error && (

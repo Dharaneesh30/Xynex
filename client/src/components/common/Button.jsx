@@ -10,14 +10,15 @@ export default function Button({
   href,
   ...props 
 }) {
-  const baseStyles = "inline-flex items-center justify-center font-body font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-blue/50 disabled:opacity-50 disabled:pointer-events-none rounded-md";
+  const baseStyles = "inline-flex items-center justify-center font-body font-medium transition-all duration-300 focus:outline-none disabled:opacity-50 disabled:pointer-events-none rounded-md border border-transparent";
   
   const variants = {
-    primary: "bg-ink dark:bg-white text-white dark:text-ink hover:opacity-90 shadow-md",
-    secondary: "bg-surface dark:bg-[#111111] text-ink dark:text-white border border-ink/5 dark:border-white/5 hover:bg-surface-elevated dark:hover:bg-[#1A1A1A] shadow-sm",
-    gradient: "bg-gradient-to-r from-brand-blue to-brand-violet text-white hover:opacity-90 shadow-md",
-    outline: "border border-ink/10 dark:border-white/10 text-ink dark:text-white hover:bg-ink/5 dark:hover:bg-white/5",
-    ghost: "text-ink-muted dark:text-zinc-400 hover:text-ink dark:hover:text-white hover:bg-ink/5 dark:hover:bg-white/5"
+    primary: "bg-[#7C3AED] text-[#FFFFFF] hover:bg-[#8B5CF6] active:bg-[#6D28D9] focus:ring-2 focus:ring-[#A78BFA] shadow-[0_0_15px_rgba(124,58,237,0.30)]",
+    secondary: "bg-[#0891B2] text-[#FFFFFF] hover:bg-[#06B6D4] active:bg-[#0E7490] focus:ring-2 focus:ring-[#06B6D4] shadow-[0_0_15px_rgba(6,182,212,0.25)]",
+    cyan: "bg-[#0891B2] text-[#FFFFFF] hover:bg-[#06B6D4] active:bg-[#0E7490] focus:ring-2 focus:ring-[#06B6D4] shadow-[0_0_15px_rgba(6,182,212,0.25)]",
+    gradient: "bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] text-[#FFFFFF] hover:opacity-90 shadow-[0_0_15px_rgba(124,58,237,0.25)]",
+    outline: "!border-[#7C3AED] bg-transparent text-[#A78BFA] hover:bg-[rgba(124,58,237,0.12)] hover:!border-[#8B5CF6] hover:text-[#FFFFFF]",
+    ghost: "bg-transparent text-[#CBD5E1] hover:bg-[rgba(255,255,255,0.05)] hover:text-[#FFFFFF]"
   };
 
   const sizes = {

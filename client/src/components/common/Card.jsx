@@ -4,7 +4,7 @@ const Card = forwardRef(({ children, className = "", hoverable = false, ...props
   return (
     <div 
       ref={ref}
-      className={`bg-surface backdrop-blur-xl border border-white/40 shadow-resting rounded-2xl overflow-hidden ${hoverable ? 'transition-all duration-300 hover:border-brand-violet/30 hover:shadow-elevated hover:-translate-y-1' : ''} ${className}`}
+      className={`bg-[#0D0D14] border border-[#272333] rounded-2xl overflow-hidden ${hoverable ? 'transition-all duration-300 hover:bg-[#12101A] hover:border-[#7C3AED] hover:shadow-[0_0_20px_rgba(124,58,237,0.12)] hover:-translate-y-1' : ''} ${className}`}
       {...props}
     >
       {children}
