@@ -3,8 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
-import Card from '../../components/common/Card';
 import GradientWaves from '../../components/animations/GradientWaves';
+import BlurReveal from '../../components/animations/BlurReveal';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -26,20 +26,27 @@ export default function Register() {
   };
 
   return (
-    <main className="flex-grow flex items-center justify-center pt-32 pb-20 px-6 relative">
-      <GradientWaves />
-      <Card className="w-full max-w-md p-8 relative z-10">
-        <h1 className="text-3xl font-display font-bold mb-6 text-center">Create Account</h1>
+    <main className="flex-grow flex items-center justify-center pt-32 pb-20 px-6 relative z-10">
+      <div className="fixed inset-0 z-[-1] bg-[#050507]">
+        <GradientWaves color1="#050507" color2="#164E63" color3="#06B6D4" color4="#7C3AED" className="opacity-40" />
+      </div>
+
+      <div className="w-full max-w-md bg-[rgba(13,13,20,0.6)] backdrop-blur-xl border border-[#272333] p-10 rounded-[24px] shadow-[0_0_40px_rgba(124,58,237,0.1)] relative z-10">
+        <BlurReveal>
+          <h1 className="text-3xl font-display font-medium mb-2 text-center text-[#F8FAFC] tracking-wide">Initialize Account</h1>
+          <p className="text-[#94A3B8] text-center mb-8">Join the XYNEX design network.</p>
+        </BlurReveal>
         
-        {error && <div className="bg-red-500/10 border border-red-500 text-red-500 p-3 rounded mb-6 text-sm">{error}</div>}
+        {error && <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-lg mb-6 text-sm">{error}</div>}
         
-        <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+        <form onSubmit={handleSubmit} className="space-y-5 mb-8">
           <Input 
             label="Full Name" 
             type="text" 
             value={name} 
             onChange={(e) => setName(e.target.value)} 
             required 
+            className="!bg-[#050507] !border-[#272333] focus:!border-[#7C3AED] focus:!ring-[#7C3AED]"
           />
           <Input 
             label="Email Address" 
@@ -47,6 +54,7 @@ export default function Register() {
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             required 
+            className="!bg-[#050507] !border-[#272333] focus:!border-[#7C3AED] focus:!ring-[#7C3AED]"
           />
           <Input 
             label="Password" 
@@ -54,15 +62,15 @@ export default function Register() {
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
             required 
-            minLength={6}
+            className="!bg-[#050507] !border-[#272333] focus:!border-[#7C3AED] focus:!ring-[#7C3AED]"
           />
-          <Button type="submit" variant="gradient" className="w-full mt-4">Sign Up</Button>
+          <Button type="submit" variant="primary" className="w-full mt-4 !bg-[#7C3AED] hover:!bg-[#8B5CF6] !text-[#FFFFFF] !border-none font-medium py-3 rounded-lg">Create Account</Button>
         </form>
         
-        <p className="text-center text-sm text-ink-muted dark:text-slate-400">
-          Already have an account? <Link to="/login" className="text-brand-blue dark:text-brand-violet-light hover:underline">Log in</Link>
+        <p className="text-center text-sm text-[#94A3B8]">
+          Already have an account? <Link to="/login" className="text-[#06B6D4] hover:text-[#22D3EE] font-medium transition-colors">Log In here</Link>
         </p>
-      </Card>
+      </div>
     </main>
   );
 }

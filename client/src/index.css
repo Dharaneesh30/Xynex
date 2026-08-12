@@ -1,18 +1,46 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-base: #F8FAFC;
-  --color-surface: rgba(255, 255, 255, 0.65);
-  --color-surface-elevated: rgba(255, 255, 255, 0.85);
-  --color-brand-blue: #0057FE;
-  --color-brand-violet: #4A11C0;
-  --color-brand-violet-light: #7C3AED;
-  --color-ink: #0F172A;
-  --color-ink-muted: #64748B;
-  --color-status-good: #10B981;
+  /* XYNEX Core Palette */
+  --color-xynex-black: #050507;
+  --color-xynex-surface: #08080C;
+  --color-xynex-section: #0A0A0F;
+  --color-xynex-card: #0D0D14;
+  --color-xynex-card-elevated: #12111A;
   
-  --shadow-resting: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
-  --shadow-elevated: 0 10px 30px -4px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  --color-xynex-white: #F8FAFC;
+  --color-xynex-hero: #FFFFFF;
+  --color-xynex-heading-sec: #E2E8F0;
+  --color-xynex-body: #CBD5E1;
+  --color-xynex-body-sec: #94A3B8;
+  --color-xynex-muted: #64748B;
+  --color-xynex-disabled: #475569;
+
+  --color-brand-violet-primary: #7C3AED;
+  --color-brand-violet-bright: #8B5CF6;
+  --color-brand-violet-soft: #A78BFA;
+  --color-brand-violet-deep: #4C1D95;
+
+  --color-brand-cyan-primary: #06B6D4;
+  --color-brand-cyan-bright: #22D3EE;
+  --color-brand-cyan-soft: #67E8F9;
+  --color-brand-cyan-deep: #164E63;
+  
+  --color-xynex-border: #272333;
+  --color-xynex-border-subtle: #1E1E28;
+
+  /* Legacy mappings to ease transition */
+  --color-bg-base: var(--bg-base);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-brand-blue: #06B6D4;
+  --color-brand-violet: #7C3AED;
+  --color-brand-violet-light: #A78BFA;
+  
+  --shadow-resting: 0 4px 20px -2px rgba(5, 5, 7, 0.5), 0 0 0 1px rgba(39, 35, 51, 1) inset;
+  --shadow-elevated: 0 10px 30px -4px rgba(5, 5, 7, 0.8), 0 0 0 1px rgba(124, 58, 237, 0.3) inset;
 
   --font-display: "Bricolage Grotesque", sans-serif;
   --font-body: "General Sans", "Inter", sans-serif;
@@ -21,20 +49,13 @@
 
 @layer base {
   :root {
-    /* Permanent Void Black Theme */
-    --bg-base: #000000;
-    --surface: #09090b;
-    --surface-elevated: #18181b;
-    --brand-blue: #3B82F6;
-    --brand-violet: #8B5CF6;
-    --brand-violet-light: #A78BFA;
+    /* Permanent XYNEX Dark Theme */
+    --bg-base: #050507;
+    --surface: #08080C;
+    --surface-elevated: #0D0D14;
     
-    /* Ink colors */
-    --ink: #ffffff;
-    --ink-muted: #a1a1aa;
-    
-    /* Status Colors */
-    --status-good: #10B981;
+    --ink: #CBD5E1;
+    --ink-muted: #94A3B8;
   }
 
   body {
@@ -43,6 +64,27 @@
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Custom XYNEX Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #08080C; 
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #272333; 
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #7C3AED; 
+  }
+  
+  /* Selection Color */
+  ::selection {
+    background: #7C3AED;
+    color: #FFFFFF;
   }
 }
