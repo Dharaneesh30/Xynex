@@ -48,10 +48,10 @@ export default function Navbar() {
               key={link.path}
               to={link.path}
               className={({ isActive }) => 
-                `text-sm font-medium transition-colors hover:text-brand-violet-light ${
+                `text-sm font-medium transition-colors hover:text-brand-blue dark:hover:text-white ${
                   isActive || (link.path !== '/' && location.pathname.startsWith(link.path))
-                    ? 'text-brand-blue' 
-                    : 'text-ink-muted'
+                    ? 'text-brand-blue dark:text-brand-violet-light' 
+                    : 'text-ink-muted dark:text-slate-300'
                 }`
               }
             >

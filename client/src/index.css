@@ -21,22 +21,28 @@
 
 @layer base {
   :root {
-    --bg-base: #F8FAFC;
-    --surface: rgba(255, 255, 255, 0.65);
-    --surface-elevated: rgba(255, 255, 255, 0.85);
-    --brand-blue: #0057FE;
-    --brand-violet: #4A11C0;
-    --brand-violet-light: #7C3AED;
-    --ink: #0F172A;
-    --ink-muted: #64748B;
+    /* Permanent Void Black Theme */
+    --bg-base: #000000;
+    --surface: #09090b;
+    --surface-elevated: #18181b;
+    --brand-blue: #3B82F6;
+    --brand-violet: #8B5CF6;
+    --brand-violet-light: #A78BFA;
+    
+    /* Ink colors */
+    --ink: #ffffff;
+    --ink-muted: #a1a1aa;
+    
+    /* Status Colors */
     --status-good: #10B981;
   }
 
   body {
-    background-color: var(--color-bg-base);
-    color: var(--color-ink);
+    background-color: var(--bg-base);
+    color: var(--ink);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }

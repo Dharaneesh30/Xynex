@@ -10,14 +10,14 @@ export default function Button({
   href,
   ...props 
 }) {
-  const baseStyles = "inline-flex items-center justify-center font-body font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-blue/50 disabled:opacity-50 disabled:pointer-events-none rounded-full";
+  const baseStyles = "inline-flex items-center justify-center font-body font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-brand-blue/50 disabled:opacity-50 disabled:pointer-events-none rounded-md";
   
   const variants = {
-    primary: "bg-ink text-white hover:bg-ink/80 shadow-md hover:shadow-lg",
-    secondary: "bg-surface-elevated backdrop-blur-md text-ink hover:bg-white/90 border border-white/50 shadow-sm",
-    gradient: "bg-gradient-to-r from-brand-blue to-brand-violet text-white hover:opacity-90 shadow-md hover:shadow-lg hover:shadow-brand-blue/20",
-    outline: "border border-brand-blue text-brand-blue hover:bg-brand-blue/10",
-    ghost: "text-ink-muted hover:text-ink hover:bg-surface-elevated"
+    primary: "bg-ink dark:bg-white text-white dark:text-ink hover:opacity-90 shadow-md",
+    secondary: "bg-surface dark:bg-[#111111] text-ink dark:text-white border border-ink/5 dark:border-white/5 hover:bg-surface-elevated dark:hover:bg-[#1A1A1A] shadow-sm",
+    gradient: "bg-gradient-to-r from-brand-blue to-brand-violet text-white hover:opacity-90 shadow-md",
+    outline: "border border-ink/10 dark:border-white/10 text-ink dark:text-white hover:bg-ink/5 dark:hover:bg-white/5",
+    ghost: "text-ink-muted dark:text-zinc-400 hover:text-ink dark:hover:text-white hover:bg-ink/5 dark:hover:bg-white/5"
   };
 
   const sizes = {

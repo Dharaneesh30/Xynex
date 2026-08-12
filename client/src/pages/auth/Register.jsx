@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
+import GradientWaves from '../../components/animations/GradientWaves';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -25,8 +26,9 @@ export default function Register() {
   };
 
   return (
-    <main className="flex-grow flex items-center justify-center pt-32 pb-20 px-6">
-      <Card className="w-full max-w-md p-8">
+    <main className="flex-grow flex items-center justify-center pt-32 pb-20 px-6 relative">
+      <GradientWaves />
+      <Card className="w-full max-w-md p-8 relative z-10">
         <h1 className="text-3xl font-display font-bold mb-6 text-center">Create Account</h1>
         
         {error && <div className="bg-red-500/10 border border-red-500 text-red-500 p-3 rounded mb-6 text-sm">{error}</div>}
@@ -57,8 +59,8 @@ export default function Register() {
           <Button type="submit" variant="gradient" className="w-full mt-4">Sign Up</Button>
         </form>
         
-        <p className="text-center text-sm text-ink-muted">
-          Already have an account? <Link to="/login" className="text-brand-blue hover:underline">Log in</Link>
+        <p className="text-center text-sm text-ink-muted dark:text-slate-400">
+          Already have an account? <Link to="/login" className="text-brand-blue dark:text-brand-violet-light hover:underline">Log in</Link>
         </p>
       </Card>
     </main>

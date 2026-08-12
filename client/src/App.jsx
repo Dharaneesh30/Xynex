@@ -17,6 +17,8 @@ import Cart from './pages/universe/Cart';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Profile from './pages/auth/Profile';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminRoute from './components/common/AdminRoute';
 import NotFound from './pages/NotFound';
 
 function PageTransition({ children }) {
@@ -55,6 +57,9 @@ function AppRoutes() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
+          <Route element={<AdminRoute />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </PageTransition>
