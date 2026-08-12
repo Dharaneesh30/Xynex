@@ -7,10 +7,10 @@ export default function FurnitureModel({ item }) {
   const h = dimensions.height;
   const d = dimensions.depth;
   
-  // Generic materials
-  const mainMat = <meshStandardMaterial color={color} roughness={0.7} metalness={0.2} />;
-  const darkMat = <meshStandardMaterial color="#222222" roughness={0.8} />;
-  const woodMat = <meshStandardMaterial color="#8b5a2b" roughness={0.9} />;
+  // Realistic materials
+  const mainMat = <meshPhysicalMaterial color={color} roughness={0.3} metalness={0.1} clearcoat={0.5} clearcoatRoughness={0.2} />;
+  const darkMat = <meshPhysicalMaterial color="#1a1a1a" roughness={0.4} metalness={0.8} clearcoat={0.3} clearcoatRoughness={0.1} />;
+  const woodMat = <meshPhysicalMaterial color="#3e2723" roughness={0.6} metalness={0.1} clearcoat={0.8} clearcoatRoughness={0.3} />;
 
   if (id === 'prod-001' || id === 'prod-004' || id === 'prod-009') {
     // Desk, Coffee Table, or Dining Table
@@ -184,7 +184,7 @@ export default function FurnitureModel({ item }) {
         {/* Frame */}
         <mesh position={[0, h/2, 0]} castShadow receiveShadow>
           <boxGeometry args={[w, h, d]} />
-          <meshStandardMaterial color="#111" />
+          <meshPhysicalMaterial color="#111" roughness={0.5} metalness={0.6} />
         </mesh>
         {/* Canvas front */}
         <mesh position={[0, h/2, d/2 + 0.005]} castShadow receiveShadow>
@@ -230,7 +230,7 @@ export default function FurnitureModel({ item }) {
         {/* Simple drawer lines to simulate detail */}
         <mesh position={[0, h/2, d/2 + 0.01]} receiveShadow>
           <planeGeometry args={[w - 0.1, h - 0.1]} />
-          <meshStandardMaterial color="#222" opacity={0.3} transparent />
+          <meshPhysicalMaterial color="#222" roughness={0.8} metalness={0.5} opacity={0.3} transparent />
         </mesh>
       </group>
     );

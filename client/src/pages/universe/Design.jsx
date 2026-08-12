@@ -1,7 +1,8 @@
 import React, { useState, Suspense, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Grid, PivotControls, Environment } from '@react-three/drei';
+import { OrbitControls, PivotControls, Environment } from '@react-three/drei';
 import * as THREE from 'three';
+import { EffectComposer, Bloom, SSAO, Vignette } from '@react-three/postprocessing';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
@@ -10,19 +11,16 @@ import { useCart } from '../../context/CartContext';
 import catalogData from '../../data/catalog.json';
 import FurnitureModel from '../../components/universe/FurnitureModel';
 
-function PlacedItem({ item, position, _updatePosition }) {
-  // item.dimensions are width(x), height(y), depth(z)
+function PlacedItem({ item, position, isSelected, onSelect }) {
   return (
     <PivotControls
       anchor={[0, -1, 0]} // Anchor at bottom center
       depthTest={false}
       lineWidth={2}
       axisColors={['#0057FE', '#4A11C0', '#34D399']}
-      onDragEnd={() => {
-        // Optional: save new position
-      }}
+      visible={isSelected}
     >
-      <group position={position}>
+      <group position={position} onPointerDown={(e) => { e.stopPropagation(); onSelect(); }}>
         <FurnitureModel item={item} />
       </group>
     </PivotControls>
@@ -31,32 +29,51 @@ function PlacedItem({ item, position, _updatePosition }) {
 
 function RoomWalls({ width, length }) {
   const wallHeight = 2.5;
-  const wallThickness = 0.1;
-  const material = new THREE.MeshStandardMaterial({ 
-    color: '#171A26', 
-    transparent: true, 
-    opacity: 0.5,
-    side: THREE.DoubleSide
-  });
+
+  // Real room wall paint (warm eggshell)
+  const WallMaterial = () => (
+    <meshPhysicalMaterial 
+      color="#e8e6e1" 
+      roughness={0.95} 
+      metalness={0.0} 
+      side={THREE.FrontSide} // FrontSide only creates the "Dollhouse" view effect
+    />
+  );
 
   return (
     <group>
-      {/* Floor */}
+      {/* Floor - Realistic Dark Hardwood */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[width, length]} />
-        <meshStandardMaterial color="#0F1119" />
+        <meshPhysicalMaterial 
+          color="#2a221b" 
+          roughness={0.85} 
+          metalness={0.0} 
+        />
       </mesh>
       
-      {/* Back Wall (Z = -length/2) */}
-      <mesh position={[0, wallHeight/2, -length/2]} receiveShadow>
-        <boxGeometry args={[width, wallHeight, wallThickness]} />
-        <primitive object={material} />
+      {/* Back Wall */}
+      <mesh position={[0, wallHeight/2, -length/2]} receiveShadow castShadow>
+        <planeGeometry args={[width, wallHeight]} />
+        <WallMaterial />
       </mesh>
       
-      {/* Left Wall (X = -width/2) */}
-      <mesh position={[-width/2, wallHeight/2, 0]} receiveShadow>
-        <boxGeometry args={[wallThickness, wallHeight, length]} />
-        <primitive object={material} />
+      {/* Front Wall */}
+      <mesh position={[0, wallHeight/2, length/2]} rotation={[0, Math.PI, 0]} receiveShadow castShadow>
+        <planeGeometry args={[width, wallHeight]} />
+        <WallMaterial />
+      </mesh>
+
+      {/* Left Wall */}
+      <mesh position={[-width/2, wallHeight/2, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow castShadow>
+        <planeGeometry args={[length, wallHeight]} />
+        <WallMaterial />
+      </mesh>
+
+      {/* Right Wall */}
+      <mesh position={[width/2, wallHeight/2, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow castShadow>
+        <planeGeometry args={[length, wallHeight]} />
+        <WallMaterial />
       </mesh>
     </group>
   );
@@ -66,6 +83,7 @@ export default function Design() {
   const { addToCart, setDesignSnapshot } = useCart();
   const [roomDim, setRoomDim] = useState({ width: 5, length: 5 });
   const [placedItems, setPlacedItems] = useState([]);
+  const [selectedItemId, setSelectedItemId] = useState(null);
   const [activeCategory, setActiveCategory] = useState('All');
   const [isQueryModalOpen, setIsQueryModalOpen] = useState(false);
   const canvasRef = useRef();
@@ -74,14 +92,16 @@ export default function Design() {
   const filteredCatalog = activeCategory === 'All' ? catalogData : catalogData.filter(item => item.category === activeCategory);
 
   const handleAddToRoom = (product) => {
+    const newId = Date.now() + Math.random();
     setPlacedItems(prev => [
       ...prev, 
       { 
         ...product, 
-        instanceId: Date.now() + Math.random(),
+        instanceId: newId,
         position: [0, product.dimensions.height / 2, 0] // center floor
       }
     ]);
+    setSelectedItemId(newId);
   };
 
   const calculateTotal = () => {
@@ -185,33 +205,42 @@ export default function Design() {
 
       {/* Center Panel: 3D Canvas */}
       <div className="flex-grow flex relative bg-bg-base overflow-hidden">
-        <Canvas shadows camera={{ position: [5, 5, 5], fov: 50 }} gl={{ preserveDrawingBuffer: true }} ref={canvasRef}>
-          <color attach="background" args={['#06070C']} />
-          <ambientLight intensity={0.5} />
-          <directionalLight position={[10, 10, 5]} intensity={1} castShadow shadow-mapSize={[1024, 1024]} />
+        <Canvas 
+          shadows 
+          camera={{ position: [5, 5, 5], fov: 50 }} 
+          gl={{ preserveDrawingBuffer: true, antialias: false }} 
+          ref={canvasRef}
+          onPointerMissed={() => setSelectedItemId(null)}
+        >
+          <color attach="background" args={['#020202']} />
+          <ambientLight intensity={0.2} />
+          
+          {/* Key Light (warm studio) */}
+          <directionalLight position={[10, 15, 10]} intensity={1.5} color="#fff1e0" castShadow shadow-mapSize={[2048, 2048]} shadow-bias={-0.0001} />
+          {/* Fill Light (cool studio) */}
+          <directionalLight position={[-10, 10, -10]} intensity={0.5} color="#e0f0ff" />
           
           <Suspense fallback={null}>
-            <Environment preset="city" />
+            <Environment preset="studio" />
             <RoomWalls width={roomDim.width} length={roomDim.length} />
-            
-            <Grid 
-              position={[0, 0.01, 0]} 
-              args={[roomDim.width, roomDim.length]} 
-              cellSize={1} 
-              cellThickness={1} 
-              cellColor="#171A26" 
-              sectionSize={5} 
-              sectionThickness={1.5} 
-              sectionColor="#4A11C0" 
-              fadeDistance={25} 
-              infiniteGrid={true}
-            />
 
             {placedItems.map(item => (
-              <PlacedItem key={item.instanceId} item={item} position={item.position} />
+              <PlacedItem 
+                key={item.instanceId} 
+                item={item} 
+                position={item.position} 
+                isSelected={selectedItemId === item.instanceId}
+                onSelect={() => setSelectedItemId(item.instanceId)}
+              />
             ))}
 
             <OrbitControls makeDefault minPolarAngle={0} maxPolarAngle={Math.PI / 2 - 0.05} />
+            
+            <EffectComposer multisampling={4}>
+              <SSAO radius={0.1} intensity={10} luminanceInfluence={0.5} color="black" />
+              <Bloom luminanceThreshold={0.9} luminanceSmoothing={0.9} intensity={0.2} />
+              <Vignette eskil={false} offset={0.1} darkness={1.1} />
+            </EffectComposer>
           </Suspense>
         </Canvas>
 
