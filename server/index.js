@@ -509,6 +509,20 @@ app.post('/api/design-query', async (req, res) => {
   }
 });
 
+// Serve static files from dist (built React app)
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const distPath = path.join(__dirname, '../dist');
+
+app.use(express.static(distPath));
+
+// Handle client-side routing by serving index.html for non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
