@@ -420,6 +420,11 @@ app.post('/api/orders', protect, async (req, res) => {
     // 4. Send emails (non-blocking — order is already saved)
     try {
       const transporter = getTransporter();
+      
+      // Test transporter connection
+      await transporter.verify();
+      console.log('[EMAIL] ✅ SMTP connection verified');
+      
       await Promise.all([
         transporter.sendMail({
           from: `"XYNEX" <${process.env.SMTP_USER}>`,
@@ -436,9 +441,15 @@ app.post('/api/orders', protect, async (req, res) => {
           attachments
         })
       ]);
-      console.log(`[EMAIL] Invoice sent to ${req.user.email} & admin`);
+      console.log(`[EMAIL] ✅ Invoice sent to ${req.user.email} & admin`);
     } catch (emailError) {
-      console.error('[EMAIL] Failed to send order emails:', emailError.message);
+      console.error('[EMAIL] ❌ Failed to send order emails:');
+      console.error('  Error:', emailError.message);
+      console.error('  Check:');
+      console.error('    1. SMTP credentials in .env are correct');
+      console.error('    2. Gmail 2FA is enabled');
+      console.error('    3. App Password is set (not regular password)');
+      console.error('    4. SMTP_USER and SMTP_PASS are set in environment');
       // Order is already saved — don't fail the request because of email
     }
 
