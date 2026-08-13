@@ -44,13 +44,36 @@ const connectDB = async () => {
     process.exit(1);
   }
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('[DB] Connected to MongoDB Atlas.');
+    await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 10000,
+      retryWrites: true,
+    });
+    console.log('[DB] ✅ Connected to MongoDB Atlas successfully!');
   } catch (error) {
-    console.error('[DB] Connection error:', error.message);
+    console.error('[DB] ❌ Connection error:', error.message);
+    console.error('[DB] Make sure:');
+    console.error('  1. Your IP is whitelisted in MongoDB Atlas (Network Access)');
+    console.error('  2. Your MONGO_URI connection string is correct');
+    console.error('  3. Your MongoDB username and password are correct');
     process.exit(1);
   }
 };
+
+// Add connection event listeners
+mongoose.connection.on('connected', () => {
+  console.log('[DB] Mongoose connected to MongoDB');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('[DB] Mongoose connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.warn('[DB] Mongoose disconnected from MongoDB');
+});
+
 connectDB();
 
 // Auth Middleware
