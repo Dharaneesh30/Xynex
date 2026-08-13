@@ -9,6 +9,7 @@
     "dev:server": "nodemon server/index.js",
     "build": "vite build client --outDir ./dist",
     "build:client": "vite build client",
+    "postinstall": "npm run build",
     "lint:client": "oxlint client",
     "preview:client": "vite preview client",
     "start": "node server/index.js",
