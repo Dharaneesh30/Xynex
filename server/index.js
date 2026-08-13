@@ -20,15 +20,21 @@ const JWT_SECRET = process.env.JWT_SECRET || 'xynex_super_secret_key_2026';
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
-// Database Connection
+// Database Connection — uses MONGO_URI if set, otherwise spins up an in-memory MongoDB
 const connectDB = async () => {
   try {
-    const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/xynex_dev';
-    await mongoose.connect(mongoUri);
-    console.log(`Connected to MongoDB at ${mongoUri}`);
+    if (process.env.MONGO_URI) {
+      await mongoose.connect(process.env.MONGO_URI);
+      console.log(`[DB] Connected to MongoDB Atlas: ${process.env.MONGO_URI}`);
+    } else {
+      console.log('[DB] MONGO_URI not set — starting in-memory MongoDB...');
+      const mongod = await MongoMemoryServer.create();
+      const uri = mongod.getUri();
+      await mongoose.connect(uri);
+      console.log(`[DB] In-memory MongoDB running at ${uri}`);
+    }
   } catch (error) {
-    console.error('MongoDB connection error. Please ensure MongoDB is running locally, or provide a MONGO_URI in .env:', error.message);
-    // Don't exit process so server stays alive to serve error messages to frontend
+    console.error('[DB] Connection error:', error.message);
   }
 };
 connectDB();
@@ -142,9 +148,20 @@ app.delete('/api/admin/users/:id', protect, adminProtect, async (req, res) => {
 
 // --- ORDER ROUTES --- //
 
+// Helper: build reusable email transporter
+const getTransporter = () => nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: Number(process.env.SMTP_PORT) || 587,
+  secure: Number(process.env.SMTP_PORT) === 465,
+  auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+});
+
+// Helper: generate order ID string
+const genOrderId = (mongoId) => `XNX-${String(mongoId).slice(-8).toUpperCase()}`;
+
 app.post('/api/orders', protect, async (req, res) => {
   const { items, total, designImage, address } = req.body;
-  
+
   if (!items || items.length === 0) {
     return res.status(400).json({ success: false, error: 'No order items' });
   }
@@ -159,53 +176,238 @@ app.post('/api/orders', protect, async (req, res) => {
       designSnapshot: designImage || null
     });
 
-    // 2. Email logic (simplified for space)
-    try {
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST || 'smtp.ethereal.email',
-        port: Number(process.env.SMTP_PORT) || 587,
-        secure: Number(process.env.SMTP_PORT) === 465,
-        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+    const orderId = genOrderId(order._id);
+    const orderDate = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+    const deliveryDate = new Date();
+    deliveryDate.setDate(deliveryDate.getDate() + 7);
+    const estimatedDelivery = deliveryDate.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+    // Build attachments for design image
+    const attachments = [];
+    let designImgTag = '';
+    if (designImage) {
+      const mimeMatch = designImage.match(/^data:(image\/\w+);base64,/);
+      const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+      const ext = mime.split('/')[1];
+      const base64Data = designImage.replace(/^data:image\/\w+;base64,/, '');
+      attachments.push({
+        filename: `room-design.${ext}`,
+        content: Buffer.from(base64Data, 'base64'),
+        cid: 'xynex_design_snapshot'
       });
-
-      const deliveryDate = new Date();
-      deliveryDate.setDate(deliveryDate.getDate() + 7);
-      const formattedDate = deliveryDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-      let attachments = [];
-      let imageCid = '';
-      if (designImage) {
-        const base64Data = designImage.replace(/^data:image\/jpeg;base64,/, "");
-        attachments.push({ filename: 'room-design.jpg', content: Buffer.from(base64Data, 'base64'), cid: 'designsnapshot' });
-        imageCid = '<p>Your Design:</p><img src="cid:designsnapshot" style="max-width:100%; border-radius:8px;"/>';
-      }
-
-      const itemsHtml = items.map(i => `<tr><td>${i.name}</td><td>${i.qty}</td><td>$${(i.price * i.qty).toLocaleString()}</td></tr>`).join('');
-      
-      // Customer email
-      await transporter.sendMail({
-        from: `"XYNEX Orders" <${process.env.SMTP_USER || 'orders@xynex.com'}>`,
-        to: req.user.email,
-        subject: `Your XYNEX Order Invoice - Expected ${formattedDate}`,
-        html: `<h2>Thank you for your order, ${req.user.name}!</h2><p>Address: ${address}</p><table border="1" cellpadding="10" style="border-collapse: collapse;"><tr><th>Item</th><th>Qty</th><th>Total</th></tr>${itemsHtml}<tr><td colspan="2"><strong>Total Paid</strong></td><td><strong>$${total.toLocaleString()}</strong></td></tr></table>${imageCid}`,
-        attachments
-      });
-
-      // Admin email
-      await transporter.sendMail({
-        from: `"XYNEX Orders" <${process.env.SMTP_USER || 'orders@xynex.com'}>`,
-        to: process.env.SMTP_FROM || 'dharaneesh0530@gmail.com',
-        subject: `New Order from ${req.user.name}`,
-        html: `<h2>New Order Received!</h2><p><strong>Customer:</strong> ${req.user.name} (${req.user.email})</p><p><strong>Address:</strong> ${address}</p><table border="1" cellpadding="10" style="border-collapse: collapse;"><tr><th>Item</th><th>Qty</th><th>Total</th></tr>${itemsHtml}<tr><td colspan="2"><strong>Total Paid</strong></td><td><strong>$${total.toLocaleString()}</strong></td></tr></table>${imageCid}`,
-        attachments
-      });
-    } catch (emailError) {
-      console.error('Email error:', emailError);
+      designImgTag = `
+        <div style="margin-top:32px;">
+          <h3 style="color:#a78bfa;font-size:14px;text-transform:uppercase;letter-spacing:2px;margin:0 0 12px;">Your Room Design</h3>
+          <img src="cid:xynex_design_snapshot" alt="Room Design" style="width:100%;max-width:560px;border-radius:12px;border:1px solid #333;"/>
+        </div>`;
     }
 
-    res.status(201).json({ success: true, order });
+    // Build items rows
+    const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
+    const gst = subtotal * 0.18;
+    const itemRowsHtml = items.map(i => `
+      <tr>
+        <td style="padding:12px 16px;border-bottom:1px solid #2a2a3a;color:#e2e8f0;">
+          <span style="font-weight:600;">${i.name}</span>
+          ${i.color ? `<br/><span style="font-size:12px;color:#a0aec0;">Color: ${i.color}</span>` : ''}
+        </td>
+        <td style="padding:12px 16px;border-bottom:1px solid #2a2a3a;color:#a0aec0;text-align:center;">${i.qty}</td>
+        <td style="padding:12px 16px;border-bottom:1px solid #2a2a3a;color:#e2e8f0;text-align:right;font-family:monospace;">₹${(i.price * i.qty).toLocaleString('en-IN')}</td>
+      </tr>`).join('');
+
+    // 2. Send CUSTOMER invoice email
+    const customerHtml = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/></head>
+<body style="margin:0;padding:0;background:#0d0d1a;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0d0d1a;padding:40px 20px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+        <!-- Header -->
+        <tr><td style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);border-radius:16px 16px 0 0;padding:40px;text-align:center;">
+          <div style="font-size:28px;font-weight:900;letter-spacing:4px;color:#fff;">XYNEX</div>
+          <div style="font-size:12px;color:#a78bfa;letter-spacing:3px;margin-top:4px;text-transform:uppercase;">Interior Universe</div>
+          <div style="margin-top:20px;display:inline-block;background:linear-gradient(135deg,#7c3aed,#2563eb);padding:8px 20px;border-radius:20px;">
+            <span style="color:#fff;font-size:13px;font-weight:600;">✓ Order Confirmed</span>
+          </div>
+        </td></tr>
+
+        <!-- Thank You Message -->
+        <tr><td style="background:#13132b;padding:32px 40px;border-left:1px solid #1e1e3a;border-right:1px solid #1e1e3a;">
+          <h1 style="margin:0 0 8px;color:#fff;font-size:22px;">Thank you, ${req.user.name}! 🎉</h1>
+          <p style="margin:0;color:#a0aec0;font-size:15px;line-height:1.6;">Your order has been placed successfully. We're excited to help transform your space! Here's your invoice for reference.</p>
+        </td></tr>
+
+        <!-- Order Info Bar -->
+        <tr><td style="background:#1a1a2e;padding:20px 40px;border-left:1px solid #1e1e3a;border-right:1px solid #1e1e3a;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="color:#a0aec0;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Order ID<br/><span style="color:#a78bfa;font-size:16px;font-weight:700;letter-spacing:2px;font-family:monospace;">${orderId}</span></td>
+              <td style="color:#a0aec0;font-size:12px;text-transform:uppercase;letter-spacing:1px;text-align:center;">Order Date<br/><span style="color:#e2e8f0;font-size:14px;font-weight:600;">${orderDate}</span></td>
+              <td style="color:#a0aec0;font-size:12px;text-transform:uppercase;letter-spacing:1px;text-align:right;">Est. Delivery<br/><span style="color:#4ade80;font-size:14px;font-weight:600;">${estimatedDelivery}</span></td>
+            </tr>
+          </table>
+        </td></tr>
+
+        <!-- Shipping Address -->
+        <tr><td style="background:#13132b;padding:20px 40px;border-left:1px solid #1e1e3a;border-right:1px solid #1e1e3a;">
+          <div style="font-size:12px;color:#a78bfa;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">📦 Shipping To</div>
+          <div style="color:#e2e8f0;font-size:14px;line-height:1.6;">${address}</div>
+        </td></tr>
+
+        <!-- Items Table -->
+        <tr><td style="background:#1a1a2e;padding:24px 40px;border-left:1px solid #1e1e3a;border-right:1px solid #1e1e3a;">
+          <div style="font-size:12px;color:#a78bfa;text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">🛋️ Order Items</div>
+          <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:10px;overflow:hidden;border:1px solid #2a2a3a;">
+            <thead>
+              <tr style="background:#0d0d1a;">
+                <th style="padding:12px 16px;text-align:left;color:#a0aec0;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Product</th>
+                <th style="padding:12px 16px;text-align:center;color:#a0aec0;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Qty</th>
+                <th style="padding:12px 16px;text-align:right;color:#a0aec0;font-size:12px;text-transform:uppercase;letter-spacing:1px;">Amount</th>
+              </tr>
+            </thead>
+            <tbody>${itemRowsHtml}</tbody>
+          </table>
+        </td></tr>
+
+        <!-- Totals -->
+        <tr><td style="background:#13132b;padding:20px 40px;border-left:1px solid #1e1e3a;border-right:1px solid #1e1e3a;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="color:#a0aec0;padding:4px 0;font-size:14px;">Subtotal</td><td style="text-align:right;color:#e2e8f0;font-family:monospace;font-size:14px;">₹${subtotal.toLocaleString('en-IN')}</td></tr>
+            <tr><td style="color:#a0aec0;padding:4px 0;font-size:14px;">GST (18%)</td><td style="text-align:right;color:#e2e8f0;font-family:monospace;font-size:14px;">₹${gst.toLocaleString('en-IN')}</td></tr>
+            <tr><td style="color:#a0aec0;padding:4px 0;font-size:14px;">Shipping</td><td style="text-align:right;color:#4ade80;font-family:monospace;font-size:14px;">FREE</td></tr>
+            <tr><td colspan="2" style="padding-top:12px;"><hr style="border:none;border-top:1px solid #2a2a3a;"/></td></tr>
+            <tr><td style="color:#fff;font-size:18px;font-weight:700;padding-top:8px;">Total Paid</td><td style="text-align:right;color:#a78bfa;font-family:monospace;font-size:22px;font-weight:900;padding-top:8px;">₹${total.toLocaleString('en-IN')}</td></tr>
+          </table>
+        </td></tr>
+
+        <!-- Design Snapshot -->
+        ${designImgTag ? `<tr><td style="background:#1a1a2e;padding:24px 40px;border-left:1px solid #1e1e3a;border-right:1px solid #1e1e3a;">${designImgTag}</td></tr>` : ''}
+
+        <!-- Footer -->
+        <tr><td style="background:#0d0d1a;border-radius:0 0 16px 16px;padding:32px 40px;text-align:center;border:1px solid #1e1e3a;border-top:none;">
+          <p style="color:#a0aec0;font-size:13px;line-height:1.8;margin:0 0 16px;">Questions? Reply to this email or reach out to us.<br/>We'll get back to you within 24 hours.</p>
+          <div style="font-size:11px;color:#4a4a6a;">© 2026 XYNEX Interior Universe · All rights reserved</div>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+    // 3. Send ADMIN notification email
+    const adminItemRowsHtml = items.map(i => `
+      <tr>
+        <td style="padding:10px 14px;border-bottom:1px solid #2a2a3a;color:#e2e8f0;">${i.name}${i.color ? ` <span style="color:#9ca3af;font-size:12px;">(${i.color})</span>` : ''}</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #2a2a3a;color:#a0aec0;text-align:center;">${i.qty}</td>
+        <td style="padding:10px 14px;border-bottom:1px solid #2a2a3a;color:#4ade80;text-align:right;font-family:monospace;">₹${(i.price * i.qty).toLocaleString('en-IN')}</td>
+      </tr>`).join('');
+
+    const adminHtml = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"/></head>
+<body style="margin:0;padding:0;background:#0a0a14;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a14;padding:30px 20px;">
+    <tr><td align="center">
+      <table width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;">
+
+        <!-- Admin Header -->
+        <tr><td style="background:linear-gradient(135deg,#1a1a2e,#0f3460);border-radius:14px 14px 0 0;padding:30px;">
+          <div style="font-size:22px;font-weight:900;letter-spacing:3px;color:#fff;">XYNEX</div>
+          <div style="font-size:12px;color:#a78bfa;letter-spacing:2px;margin-top:2px;">ADMIN NOTIFICATION</div>
+          <div style="margin-top:16px;background:#dc2626;display:inline-block;padding:6px 16px;border-radius:16px;">
+            <span style="color:#fff;font-size:12px;font-weight:700;">🛒 NEW ORDER RECEIVED</span>
+          </div>
+        </td></tr>
+
+        <!-- Customer Info -->
+        <tr><td style="background:#13132b;padding:24px 30px;border-left:1px solid #1e1e3a;border-right:1px solid #1e1e3a;">
+          <div style="font-size:12px;color:#a78bfa;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;">👤 Customer Details</div>
+          <table cellpadding="0" cellspacing="0">
+            <tr><td style="color:#a0aec0;font-size:13px;padding:3px 12px 3px 0;">Name:</td><td style="color:#fff;font-weight:600;font-size:14px;">${req.user.name}</td></tr>
+            <tr><td style="color:#a0aec0;font-size:13px;padding:3px 12px 3px 0;">Email:</td><td style="color:#60a5fa;font-size:14px;">${req.user.email}</td></tr>
+            <tr><td style="color:#a0aec0;font-size:13px;padding:3px 12px 3px 0;">Order ID:</td><td style="color:#a78bfa;font-weight:700;font-family:monospace;font-size:14px;">${orderId}</td></tr>
+            <tr><td style="color:#a0aec0;font-size:13px;padding:3px 12px 3px 0;">Date:</td><td style="color:#e2e8f0;font-size:14px;">${orderDate}</td></tr>
+          </table>
+        </td></tr>
+
+        <!-- Shipping -->
+        <tr><td style="background:#1a1a2e;padding:20px 30px;border-left:1px solid #1e1e3a;border-right:1px solid #1e1e3a;">
+          <div style="font-size:12px;color:#a78bfa;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">📦 Shipping Address</div>
+          <div style="color:#e2e8f0;font-size:14px;">${address}</div>
+        </td></tr>
+
+        <!-- Items -->
+        <tr><td style="background:#13132b;padding:20px 30px;border-left:1px solid #1e1e3a;border-right:1px solid #1e1e3a;">
+          <div style="font-size:12px;color:#a78bfa;text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;">🛋️ Items Ordered</div>
+          <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #2a2a3a;border-radius:8px;overflow:hidden;">
+            <thead>
+              <tr style="background:#0d0d1a;">
+                <th style="padding:10px 14px;text-align:left;color:#6b7280;font-size:11px;text-transform:uppercase;">Product</th>
+                <th style="padding:10px 14px;text-align:center;color:#6b7280;font-size:11px;text-transform:uppercase;">Qty</th>
+                <th style="padding:10px 14px;text-align:right;color:#6b7280;font-size:11px;text-transform:uppercase;">Total</th>
+              </tr>
+            </thead>
+            <tbody>${adminItemRowsHtml}</tbody>
+          </table>
+        </td></tr>
+
+        <!-- Totals -->
+        <tr><td style="background:#1a1a2e;padding:20px 30px;border-left:1px solid #1e1e3a;border-right:1px solid #1e1e3a;">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="color:#6b7280;font-size:13px;">Subtotal</td><td style="text-align:right;color:#e2e8f0;font-family:monospace;">₹${subtotal.toLocaleString('en-IN')}</td></tr>
+            <tr><td style="color:#6b7280;font-size:13px;">GST (18%)</td><td style="text-align:right;color:#e2e8f0;font-family:monospace;">₹${gst.toLocaleString('en-IN')}</td></tr>
+            <tr><td colspan="2"><hr style="border:none;border-top:1px solid #2a2a3a;margin:10px 0;"/></td></tr>
+            <tr><td style="color:#fff;font-weight:700;font-size:16px;">TOTAL</td><td style="text-align:right;color:#4ade80;font-family:monospace;font-size:20px;font-weight:900;">₹${total.toLocaleString('en-IN')}</td></tr>
+          </table>
+        </td></tr>
+
+        <!-- Design Snapshot for Admin -->
+        ${designImgTag ? `<tr><td style="background:#13132b;padding:20px 30px;border-left:1px solid #1e1e3a;border-right:1px solid #1e1e3a;">${designImgTag}</td></tr>` : ''}
+
+        <!-- Footer -->
+        <tr><td style="background:#0a0a14;border-radius:0 0 14px 14px;padding:20px 30px;text-align:center;border:1px solid #1e1e3a;border-top:none;">
+          <div style="font-size:11px;color:#374151;">XYNEX Admin Portal · Automated Order Notification</div>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+    // 4. Send emails (non-blocking — order is already saved)
+    try {
+      const transporter = getTransporter();
+      await Promise.all([
+        transporter.sendMail({
+          from: `"XYNEX" <${process.env.SMTP_USER}>`,
+          to: req.user.email,
+          subject: `✅ Order Confirmed — ${orderId} | XYNEX`,
+          html: customerHtml,
+          attachments
+        }),
+        transporter.sendMail({
+          from: `"XYNEX Orders" <${process.env.SMTP_USER}>`,
+          to: process.env.SMTP_FROM || 'dharaneesh0530@gmail.com',
+          subject: `🛒 New Order ${orderId} from ${req.user.name}`,
+          html: adminHtml,
+          attachments
+        })
+      ]);
+      console.log(`[EMAIL] Invoice sent to ${req.user.email} & admin`);
+    } catch (emailError) {
+      console.error('[EMAIL] Failed to send order emails:', emailError.message);
+      // Order is already saved — don't fail the request because of email
+    }
+
+    res.status(201).json({ success: true, order, orderId });
   } catch (error) {
-    console.error(error);
+    console.error('[ORDER]', error);
     res.status(500).json({ success: false, error: 'Failed to create order' });
   }
 });
