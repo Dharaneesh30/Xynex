@@ -3,7 +3,6 @@ import cors from 'cors';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import jwt from 'jsonwebtoken';
 
 // Models
@@ -17,24 +16,35 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'xynex_super_secret_key_2026';
 
-app.use(cors());
+const allowedOrigins = [
+  process.env.FRONTEND_URL,          // e.g. https://xynex.vercel.app
+  'http://localhost:5173',
+  'http://localhost:3001',
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
+  credentials: true,
+}));
 app.use(express.json({ limit: '50mb' }));
 
-// Database Connection — uses MONGO_URI if set, otherwise spins up an in-memory MongoDB
+// Database Connection — requires MONGO_URI environment variable
 const connectDB = async () => {
+  if (!process.env.MONGO_URI) {
+    console.error('[DB] ERROR: MONGO_URI environment variable is not set. Please add it in your Render dashboard.');
+    process.exit(1);
+  }
   try {
-    if (process.env.MONGO_URI) {
-      await mongoose.connect(process.env.MONGO_URI);
-      console.log(`[DB] Connected to MongoDB Atlas: ${process.env.MONGO_URI}`);
-    } else {
-      console.log('[DB] MONGO_URI not set — starting in-memory MongoDB...');
-      const mongod = await MongoMemoryServer.create();
-      const uri = mongod.getUri();
-      await mongoose.connect(uri);
-      console.log(`[DB] In-memory MongoDB running at ${uri}`);
-    }
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('[DB] Connected to MongoDB Atlas.');
   } catch (error) {
     console.error('[DB] Connection error:', error.message);
+    process.exit(1);
   }
 };
 connectDB();
