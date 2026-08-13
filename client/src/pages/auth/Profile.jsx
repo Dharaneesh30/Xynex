@@ -111,7 +111,8 @@ export default function Profile() {
             <p className="text-[#94A3B8] mb-8">Your next space is waiting to be created.</p>
             <Button 
               to="/universe/design" 
-              className="!bg-[linear-gradient(135deg,#7C3AED,#06B6D4)] !text-[#FFFFFF] hover:!bg-[linear-gradient(135deg,#8B5CF6,#22D3EE)] hover:!shadow-[0_0_20px_rgba(124,58,237,0.25)] !border-none px-8 py-3 rounded font-medium transition-all duration-300"
+              size="lg"
+              className="!bg-[linear-gradient(135deg,#7C3AED,#06B6D4)] !text-[#FFFFFF] hover:!bg-[linear-gradient(135deg,#8B5CF6,#22D3EE)] hover:!shadow-[0_0_20px_rgba(124,58,237,0.25)] !border-none rounded font-medium transition-all duration-300"
             >
               Design a Room
             </Button>

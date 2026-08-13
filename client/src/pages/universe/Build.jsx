@@ -118,7 +118,7 @@ export default function Build() {
         >
           <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-[#F8FAFC]">Your dimension starts here.</h2>
           <p className="text-[#94A3B8] text-lg mb-10">Nothing exists until someone imagines it.</p>
-          <Button to="/universe/design" className="!bg-[#06B6D4] hover:!bg-[#22D3EE] !text-[#050507] !border-none px-10 py-4 rounded font-semibold text-lg transition-all duration-300">
+          <Button to="/universe/design" size="lg" className="!bg-[#06B6D4] hover:!bg-[#22D3EE] !text-[#050507] !border-none rounded font-semibold transition-all duration-300">
             Start Building
           </Button>
         </motion.div>

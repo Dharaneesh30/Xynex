@@ -108,7 +108,7 @@ export default function Home() {
               className="bg-[rgba(13,13,20,0.5)] backdrop-blur-lg border border-[#272333] rounded-[32px] p-16 md:p-24"
             >
               <h2 className="text-3xl md:text-5xl font-display font-bold mb-10 text-[#F8FAFC]">Your next dimension is waiting.</h2>
-              <Button to="/universe" className="!bg-[#7C3AED] hover:!bg-[#8B5CF6] !text-[#FFFFFF] !border-none px-10 py-4 rounded font-semibold text-lg transition-all duration-300 hover:shadow-[0_0_25px_rgba(124,58,237,0.3)]">
+              <Button to="/universe" size="lg" className="!bg-[#7C3AED] hover:!bg-[#8B5CF6] !text-[#FFFFFF] !border-none rounded font-semibold transition-all duration-300 hover:shadow-[0_0_25px_rgba(124,58,237,0.3)]">
                 Enter XYNEX
               </Button>
             </motion.div>

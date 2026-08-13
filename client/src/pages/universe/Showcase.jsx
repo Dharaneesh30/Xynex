@@ -151,7 +151,7 @@ export default function Showcase() {
         >
           <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-[#F8FAFC]">Seen something that inspires you?</h2>
           <p className="text-[#94A3B8] text-lg mb-10">Create a dimension of your own.</p>
-          <Button to="/universe/build" className="!bg-[#06B6D4] hover:!bg-[#22D3EE] !text-[#050507] !border-none px-10 py-4 rounded font-semibold text-lg transition-all duration-300 hover:shadow-[0_0_25px_rgba(6,182,212,0.3)]">
+          <Button to="/universe/build" size="lg" className="!bg-[#06B6D4] hover:!bg-[#22D3EE] !text-[#050507] !border-none rounded font-semibold transition-all duration-300 hover:shadow-[0_0_25px_rgba(6,182,212,0.3)]">
             Start Building
           </Button>
         </motion.div>

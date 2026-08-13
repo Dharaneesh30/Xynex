@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
+import ScrollToTop from './components/common/ScrollToTop';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { useReducedMotion } from './hooks/useReducedMotion';
@@ -14,6 +15,8 @@ import Universe from './pages/universe/Universe';
 import Build from './pages/universe/Build';
 import Showcase from './pages/universe/Showcase';
 import Design from './pages/universe/Design';
+import PrivacyPolicy from './pages/legal/PrivacyPolicy';
+import TermsAndConditions from './pages/legal/TermsAndConditions';
 import Cart from './pages/universe/Cart';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
@@ -55,6 +58,8 @@ function AppRoutes() {
           <Route path="/universe/showcase" element={<Showcase />} />
           <Route path="/universe/design" element={<Design />} />
           <Route path="/universe/cart" element={<Cart />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -75,6 +80,7 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
+          <ScrollToTop />
           <AppRoutes />
         </Router>
       </CartProvider>

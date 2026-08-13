@@ -42,14 +42,14 @@ export default function Contact() {
   const contactCards = [
     { 
       title: "LOCATION", 
-      desc: "Based in [ADD LOCATION]", 
+      desc: "Based in Coimbatore Institute of Technology", 
       icon: <svg className="w-6 h-6 mb-3 text-[#06B6D4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> 
     },
     { 
       title: "PHONE", 
-      desc: "[ADD PHONE NUMBER]", 
+      desc: "+91 9489240892", 
       cta: "Call",
-      link: "tel:",
+      link: "tel:+919489240892",
       icon: <svg className="w-6 h-6 mb-3 text-[#06B6D4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> 
     },
     { 
@@ -96,9 +96,9 @@ export default function Contact() {
             <p className="text-[#F8FAFC] text-sm leading-relaxed mb-4 flex-grow">{card.desc}</p>
             {card.isSocial ? (
               <div className="flex gap-2">
-                <a href="#" className="text-xs text-[#A78BFA] hover:text-[#8B5CF6] transition-colors">[ADD GITHUB]</a>
+                <a href="https://github.com/Dharaneesh30" target="_blank" rel="noopener noreferrer" className="text-xs text-[#A78BFA] hover:text-[#8B5CF6] transition-colors">GitHub</a>
                 <span className="text-[#272333]">|</span>
-                <a href="#" className="text-xs text-[#A78BFA] hover:text-[#8B5CF6] transition-colors">[ADD LINKEDIN]</a>
+                <a href="https://linkedin.com/in/dharaneesh30" target="_blank" rel="noopener noreferrer" className="text-xs text-[#A78BFA] hover:text-[#8B5CF6] transition-colors">LinkedIn</a>
               </div>
             ) : card.cta ? (
               <a href={card.link} className="text-sm font-medium text-[#A78BFA] hover:text-[#8B5CF6] transition-colors">{card.cta} →</a>
@@ -170,7 +170,7 @@ export default function Contact() {
               </div>
             )}
 
-            <Button type="submit" variant="primary" className="w-full md:w-auto px-8 py-4 text-lg font-semibold !bg-[#7C3AED] hover:!bg-[#8B5CF6] !border-none !text-white rounded-lg" disabled={loading}>
+            <Button type="submit" size="lg" variant="primary" className="w-full md:w-auto font-semibold !bg-[#7C3AED] hover:!bg-[#8B5CF6] !border-none !text-white rounded-lg" disabled={loading}>
               {loading ? 'Sending...' : 'Send Message'}
             </Button>
           </form>
@@ -197,10 +197,10 @@ export default function Contact() {
           <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-[#F8FAFC]">Have an idea worth exploring?</h2>
           <p className="text-[#94A3B8] text-lg mb-10">Let's take it beyond the ordinary.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button onClick={() => window.scrollTo({ top: 400, behavior: 'smooth' })} className="!bg-[#06B6D4] hover:!bg-[#22D3EE] !text-[#050507] !border-none px-8 py-4 rounded font-semibold transition-all duration-300">
+            <Button onClick={() => window.scrollTo({ top: 400, behavior: 'smooth' })} size="lg" className="!bg-[#06B6D4] hover:!bg-[#22D3EE] !text-[#050507] !border-none rounded font-semibold transition-all duration-300">
               Send a Message
             </Button>
-            <Button to="/universe/showcase" variant="outline" className="px-8 py-4 rounded font-semibold border border-[#272333] text-[#CBD5E1] hover:text-[#F8FAFC] hover:bg-[rgba(255,255,255,0.05)] transition-all">
+            <Button to="/universe/showcase" variant="outline" size="lg" className="rounded font-semibold border border-[#272333] text-[#CBD5E1] hover:text-[#F8FAFC] hover:bg-[rgba(255,255,255,0.05)] transition-all">
               Explore XYNEX
             </Button>
           </div>
