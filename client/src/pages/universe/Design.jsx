@@ -129,7 +129,7 @@ export default function Design() {
     const snapshotUrl = captureSnapshot();
     
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://xynex-ufsu.onrender.com';
       const res = await fetch(`${apiUrl}/api/design-query`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

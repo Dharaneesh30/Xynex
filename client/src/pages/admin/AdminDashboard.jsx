@@ -7,7 +7,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+  const apiUrl = import.meta.env.VITE_API_URL || 'https://xynex-ufsu.onrender.com';
 
   useEffect(() => {
     const fetchUsers = async () => {

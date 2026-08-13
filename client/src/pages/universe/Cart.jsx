@@ -30,7 +30,7 @@ export default function Cart() {
 
     try {
       // 1. Send Order to Backend (Emails invoice to customer and owner)
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://xynex-ufsu.onrender.com';
       const res = await fetch(`${apiUrl}/api/orders`, {
         method: 'POST',
         headers: { 
@@ -59,7 +59,7 @@ export default function Cart() {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://xynex-ufsu.onrender.com';
       const res = await fetch(`${apiUrl}/api/reviews`, {
         method: 'POST',
         headers: { 

@@ -19,7 +19,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (token && user) {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://xynex-ufsu.onrender.com';
       fetch(`${apiUrl}/api/orders/me`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
