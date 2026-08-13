@@ -528,8 +528,12 @@ const distPath = path.join(__dirname, '../dist');
 
 app.use(express.static(distPath));
 
-// Handle client-side routing by serving index.html for non-API routes
-app.get('*', (req, res) => {
+// Handle client-side routing by serving index.html for non-API GET routes.
+app.use((req, res, next) => {
+  if (req.method !== 'GET' || req.path.startsWith('/api')) {
+    return next();
+  }
+
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
