@@ -17,10 +17,14 @@ const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'xynex_super_secret_key_2026';
 
 const allowedOrigins = [
-  process.env.FRONTEND_URL,          // e.g. https://xynex.vercel.app
+  ...((process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)),
   'http://localhost:5173',
   'http://localhost:3001',
-].filter(Boolean);
+  'https://xynex2026.vercel.app',  // Your Vercel deployment
+];
 
 app.use(cors({
   origin: (origin, callback) => {
