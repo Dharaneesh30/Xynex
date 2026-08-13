@@ -7,7 +7,7 @@
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "dev:client": "vite client",
     "dev:server": "nodemon server/index.js",
-    "build": "vite build client --outDir ./dist",
+    "build": "vite build client",
     "build:client": "vite build client",
     "postinstall": "npm run build",
     "lint:client": "oxlint client",
