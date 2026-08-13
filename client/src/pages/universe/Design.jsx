@@ -30,26 +30,48 @@ function PlacedItem({ item, position, isSelected, onSelect }) {
 function RoomWalls({ width, length }) {
   const wallHeight = 2.5;
 
-  // Real room wall paint (warm eggshell)
+  // Subtle texture for walls
   const WallMaterial = () => (
     <meshPhysicalMaterial 
-      color="#e8e6e1" 
-      roughness={0.95} 
-      metalness={0.0} 
-      side={THREE.FrontSide} // FrontSide only creates the "Dollhouse" view effect
+      color="#ede9e4" 
+      roughness={0.92} 
+      metalness={0.0}
+      side={THREE.FrontSide}
+      clearcoat={0.05}
+      clearcoatRoughness={0.9}
     />
   );
 
   return (
     <group>
-      {/* Floor - Realistic Dark Hardwood */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <planeGeometry args={[width, length]} />
+      {/* Floor - Premium Dark Hardwood with subtle texture */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow position={[0, 0, 0]}>
+        <planeGeometry args={[width + 0.2, length + 0.2]} />
         <meshPhysicalMaterial 
-          color="#2a221b" 
-          roughness={0.85} 
-          metalness={0.0} 
+          color="#2d2420" 
+          roughness={0.82} 
+          metalness={0.02}
+          clearcoat={0.1}
+          clearcoatRoughness={0.8}
         />
+      </mesh>
+      
+      {/* Baseboards - adds architectural detail */}
+      <mesh position={[0, 0.05, -length/2 - 0.02]} castShadow receiveShadow>
+        <boxGeometry args={[width, 0.1, 0.04]} />
+        <meshPhysicalMaterial color="#1a1511" roughness={0.85} metalness={0.0} />
+      </mesh>
+      <mesh position={[0, 0.05, length/2 + 0.02]} castShadow receiveShadow>
+        <boxGeometry args={[width, 0.1, 0.04]} />
+        <meshPhysicalMaterial color="#1a1511" roughness={0.85} metalness={0.0} />
+      </mesh>
+      <mesh position={[-width/2 - 0.02, 0.05, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.04, 0.1, length]} />
+        <meshPhysicalMaterial color="#1a1511" roughness={0.85} metalness={0.0} />
+      </mesh>
+      <mesh position={[width/2 + 0.02, 0.05, 0]} castShadow receiveShadow>
+        <boxGeometry args={[0.04, 0.1, length]} />
+        <meshPhysicalMaterial color="#1a1511" roughness={0.85} metalness={0.0} />
       </mesh>
       
       {/* Back Wall */}
@@ -58,8 +80,8 @@ function RoomWalls({ width, length }) {
         <WallMaterial />
       </mesh>
       
-      {/* Front Wall */}
-      <mesh position={[0, wallHeight/2, length/2]} rotation={[0, Math.PI, 0]} receiveShadow castShadow>
+      {/* Front Wall - Open for camera view (optional) */}
+      <mesh position={[0, wallHeight/2, length/2 + 0.1]} rotation={[0, Math.PI, 0]} receiveShadow castShadow visible={false}>
         <planeGeometry args={[width, wallHeight]} />
         <WallMaterial />
       </mesh>
@@ -74,6 +96,16 @@ function RoomWalls({ width, length }) {
       <mesh position={[width/2, wallHeight/2, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow castShadow>
         <planeGeometry args={[length, wallHeight]} />
         <WallMaterial />
+      </mesh>
+
+      {/* Ceiling */}
+      <mesh position={[0, wallHeight, 0]} rotation={[Math.PI, 0, 0]} receiveShadow>
+        <planeGeometry args={[width, length]} />
+        <meshPhysicalMaterial 
+          color="#f5f3f0" 
+          roughness={0.95} 
+          metalness={0.0}
+        />
       </mesh>
     </group>
   );
@@ -221,21 +253,57 @@ export default function Design() {
       <div className="flex-grow flex relative bg-bg-base overflow-hidden">
         <Canvas 
           shadows 
-          camera={{ position: [5, 5, 5], fov: 50 }} 
-          gl={{ preserveDrawingBuffer: true, antialias: false }} 
+          camera={{ position: [6, 6, 6], fov: 45, near: 0.1, far: 100 }} 
+          gl={{ 
+            preserveDrawingBuffer: true, 
+            antialias: true,
+            toneMappingExposure: 1.2,
+            pixelRatio: Math.min(window.devicePixelRatio, 2)
+          }} 
           ref={canvasRef}
           onPointerMissed={() => setSelectedItemId(null)}
         >
-          <color attach="background" args={['#020204']} />
-          <ambientLight intensity={0.2} />
+          <color attach="background" args={['#050508']} />
           
-          {/* Key Light (warm studio) */}
-          <directionalLight position={[10, 15, 10]} intensity={1.5} color="#fff1e0" castShadow shadow-mapSize={[2048, 2048]} shadow-bias={-0.0001} />
-          {/* Fill Light (cool studio) */}
-          <directionalLight position={[-10, 10, -10]} intensity={0.5} color="#e0f0ff" />
+          {/* Ambient light - soft overall illumination */}
+          <ambientLight intensity={0.35} color="#d4c5b9" />
+          
+          {/* Main Key Light - warm studio light from upper left */}
+          <directionalLight 
+            position={[12, 18, 10]} 
+            intensity={1.8} 
+            color="#fff8f0" 
+            castShadow 
+            shadow-mapSize={[4096, 4096]}
+            shadow-camera-left={-20}
+            shadow-camera-right={20}
+            shadow-camera-top={20}
+            shadow-camera-bottom={-20}
+            shadow-camera-near={0.5}
+            shadow-camera-far={50}
+            shadow-bias={-0.0005}
+            shadow-radius={8}
+          />
+          
+          {/* Fill Light - cool accent from opposite side */}
+          <directionalLight 
+            position={[-8, 12, -8]} 
+            intensity={0.6} 
+            color="#d0e8ff"
+          />
+          
+          {/* Rim/Back Light - highlights silhouettes */}
+          <directionalLight 
+            position={[0, 8, -15]} 
+            intensity={0.4} 
+            color="#e0f0ff"
+          />
+          
+          {/* Subtle point light for depth */}
+          <pointLight position={[5, 3, 5]} intensity={0.2} color="#fff8f0" />
           
           <Suspense fallback={null}>
-            <Environment preset="studio" />
+            <Environment preset="studio" intensity={0.4} />
             <RoomWalls width={roomDim.width} length={roomDim.length} />
 
             {placedItems.map(item => (
@@ -247,17 +315,38 @@ export default function Design() {
                 onSelect={() => setSelectedItemId(item.instanceId)}
               />
             ))}
-
-            <OrbitControls makeDefault minPolarAngle={0} maxPolarAngle={Math.PI / 2 - 0.05} />
             
-            <EffectComposer multisampling={4}>
-              <SSAO radius={0.1} intensity={10} luminanceInfluence={0.5} color="black" />
-              <Bloom luminanceThreshold={0.9} luminanceSmoothing={0.9} intensity={0.2} />
-              <Vignette eskil={false} offset={0.1} darkness={1.1} />
-            </EffectComposer>
-          </Suspense>
-        </Canvas>
-
+            <OrbitControls 
+              makeDefault 
+              minPolarAngle={Math.PI / 8}
+              maxPolarAngle={Math.PI / 2.5}
+              minDistance={3}
+              maxDistance={25}
+              autoRotate={placedItems.length === 0}
+              autoRotateSpeed={0.5}
+              dampingFactor={0.08}
+              enableDamping={true}
+            />
+            
+            <EffectComposer multisampling={8}>
+              <SSAO 
+                radius={0.18} 
+                intensity={14} 
+                luminanceInfluence={0.6} 
+                color="#000000"
+                bias={0.005}
+              />
+              <Bloom 
+                luminanceThreshold={0.8} 
+                luminanceSmoothing={0.9} 
+                intensity={0.25}
+                mipmapBlur={true}
+              />
+              <Vignette 
+                eskil={false} 
+                offset={0.15} 
+                darkness={1.2} 
+              />
         {/* UI Overlay on Canvas */}
         <div className="absolute top-4 left-4 right-4 flex justify-between pointer-events-none">
           <div className="bg-[#020204]/80 backdrop-blur px-3 py-1.5 rounded border border-[#272333] font-mono text-xs text-[#06B6D4] pointer-events-auto">
